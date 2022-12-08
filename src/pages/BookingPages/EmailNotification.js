@@ -3,6 +3,7 @@ import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
+import { RadialBar } from "@nivo/radial-bar";
 
 export default function EmailNotification() {
   return (
@@ -56,8 +57,7 @@ export default function EmailNotification() {
               />
             </div>
           </div>
-          <div className="div2">
-          </div>
+          <div className="div2"></div>
         </div>
       </div>
       <Footer />
