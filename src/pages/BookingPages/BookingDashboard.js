@@ -6,9 +6,9 @@ import Sidebar from "../../components/Sidebar";
 import { bar_data } from "../../utils/barData";
 export default function BookingDashboard() {
   return (
-    <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll">
+    <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
-      <div className="mt-4 mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
+      <div className="MainContainer mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
         <Sidebar />
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdLogout } from "react-icons/md";
 import MagicBell, {
   FloatingNotificationInbox,
@@ -22,7 +22,7 @@ export default function Navbar() {
     },
   ];
   return (
-    <div className="navbar mx-4 drop-shadow-lg z-50">
+    <div className="navbar absolute mb-28 w-[98%] mx-4 drop-shadow-lg z-50">
       <div className="logo cursor-pointer flex justify-center">
         <img
           src={process.env.PUBLIC_URL + "/img/header_top.png"}
@@ -34,6 +34,7 @@ export default function Navbar() {
         <a href="/" className=" overflow-hidden">
           <img src={process.env.PUBLIC_URL + "/img/logo.jpg"} alt="" />
         </a>
+
         <div className="flex flex-col items-center sm:items-stretch justify-between">
           <div className="h-[80%] flex items-center justify-end p-3 gap-4 ">
             {/* <div className="search rounded-3xl ring-1 ring-[#b6b6b6] p-2 flex gap-2 items-center">
@@ -49,30 +50,31 @@ export default function Navbar() {
               />
             </div> */}
 
-            <span className="z-50">
-              <MagicBell
-                apiKey="cc022a48684d2e21773ee83ab9cfbaf16abe26a4"
-                userEmail="niharkushwaha7@gmail.com"
-                theme={theme}
-                locale="en"
-              >
-                {(props) => (
-                  <FloatingNotificationInbox
-                    width={400}
-                    height={500}
-                    {...props}
-                  />
-                )}
-              </MagicBell>
-            </span>
-
-            <div className="items-center p-2 gap-2 hidden sm:flex">
+            <div className=" items-center p-2 gap-2 hidden sm:flex">
+              <span className="bell flex items-center">
+                <MagicBell
+                  apiKey="cc022a48684d2e21773ee83ab9cfbaf16abe26a4"
+                  userEmail="niharkushwaha7@gmail.com"
+                  theme={theme}
+                  locale="en"
+                  className="absolute z-50"
+                >
+                  {(props) => (
+                    <FloatingNotificationInbox
+                      width={400}
+                      height={500}
+                      {...props}
+                    />
+                  )}
+                </MagicBell>
+              </span>
               <span className="text-lg">Admin</span>
               <img
                 src={process.env.PUBLIC_URL + "/img/user.png"}
                 alt=""
                 className="w-7"
               />
+
               <span
                 className="flex flex-col hover:animate-pulse items-center cursor-pointer pl-5 hover:text-[#000000]"
                 onClick={logoutHandler}

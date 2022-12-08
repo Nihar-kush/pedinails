@@ -7,7 +7,7 @@ export default function Card({ title, rate, l1, l2, r1, r2, color }) {
         {title}
       </div>
       <div
-        className={`h-[60%] text-4  xl font-semibold flex items-center justify-center`}
+        className={`h-[60%] text-4xl font-semibold flex items-center justify-center`}
         style={{ color: color }}
       >
         {rate}%

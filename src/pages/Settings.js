@@ -6,9 +6,9 @@ import Sidebar from "../components/Sidebar";
 export default function Settings() {
   const [pass, setPass] = useState(null);
   return (
-    <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll">
+    <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
-      <div className="mt-4 mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
+      <div className="MainContainer mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
         <Sidebar />
         {/* MAIN VIEW */}
         <div className="Main flex flex-col gap-10 col-span-4 sm:col-span-3 px-8 py-4 bg-[#FFFFFF]">

@@ -5,12 +5,12 @@ import Sidebar from "../components/Sidebar";
 
 export default function Home() {
   return (
-    <div className="bg-[#E9E9E9] h-screen pt-4 overflow-scroll">
+    <div className="bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
-      <div className="mt-4 mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4 relative">
+      <div className=" mt-28 mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
         <Sidebar />
         {/* MAIN VIEW grid-rows-5 */}
-        <div className="Main col-span-4 sm:col-span-3 grid grid-flow-row gap-7 p-7 bg-[#FFFFFF]">
+        <div className="Main col-span-4 sm:col-span-3 z-0 grid grid-flow-row gap-7 p-7 bg-[#FFFFFF]">
           <div className="div1 row-span-1 relative w-full sm:h-48 flex items-center ">
             <img src="/img/banner.jpg" alt="" className="object-cover" />
             {/* <div className="absolute flex items-center justify-center w-full text-white text-[3.5rem]"> */}

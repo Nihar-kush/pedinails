@@ -5,7 +5,11 @@
 .Main {
   font-family: "Montserrat", sans-serif;
 }
-#tippy-26 {
+.Main :nth-child() {
+  z-index: 0;
+}
+.MainContainer {
+  margin-top: 112px;
 }
 
 /* CALENDAR CSS */
