@@ -9,7 +9,7 @@ export default function Sidebar() {
   return (
     <div className="Sidebar h-full drop-shadow-lg col-span-4 sm:col-span-1  p-4 bg-[#FFFFFF]">
       <ul className="flex flex-col text-[1.1rem]">
-        <Link to="/">
+        <Link to="/Dashboard">
           <li className=" p-5 pl-0 text-[#676666] hover:text-black flex items-center gap-4 cursor-pointer border-b-[0.8px]">
             <AiFillDashboard className="text-xl" />
             Dashboard

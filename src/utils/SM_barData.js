@@ -1,50 +1,30 @@
 export const bar_data = [
   {
-    month: "Jan",
-    Jan: 60,
+    platform: "Instagram",
+    color: "#13135d",
+    "Profile Views": 60,
+    Likes: 70,
+    Shares: 40,
   },
   {
-    month: "Feb",
-    Feb: 50,
+    platform: "Facebook",
+    color: "#00f",
+    "Profile Views": 60,
+    Likes: 70,
+    Shares: 40,
   },
   {
-    month: "Mar",
-    Mar: 45,
+    platform: "Twitter",
+    color: "#00f",
+    "Profile Views": 60,
+    Likes: 70,
+    Shares: 40,
   },
   {
-    month: "Apr",
-    Apr: 40,
-  },
-  {
-    month: "May",
-    May: 30,
-  },
-  {
-    month: "June",
-    June: 10,
-  },
-  {
-    month: "July",
-    July: 5,
-  },
-  {
-    month: "Aug",
-    Aug: 25,
-  },
-  {
-    month: "Sep",
-    Sep: 36,
-  },
-  {
-    month: "Oct",
-    Oct: 28,
-  },
-  {
-    month: "Nov",
-    Nov: 10,
-  },
-  {
-    month: "Dec",
-    Dec: 36,
+    platform: "Youtube",
+    color: "#00f",
+    "Profile Views": 60,
+    Likes: 70,
+    Shares: 40,
   },
 ];

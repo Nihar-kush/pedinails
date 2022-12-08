@@ -48,29 +48,21 @@ export default function SMManagement() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">
           <div className="div1 w-full flex items-center p-4">
-            <div className="rounded-[20px] w-full h-[21rem] flex shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
+            <div className="rounded-[20px] w-full h-[27rem] flex flex-col items-center gap-4 pt-4 shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
+              <p className="text-xs font-semibold text-[#666666]">
+                Social Media Analytics 2022
+              </p>
               <ResponsiveBar
                 data={bar_data}
-                keys={[
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "June",
-                  "July",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ]}
-                indexBy="month"
+                groupMode="grouped"
+                keys={["Profile Views", "Likes", "Shares"]}
+                indexBy="platform"
+                colors={"#FCAC11"}
                 margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
                 padding={0.3}
+                innerPadding={5}
                 valueScale={{ type: "linear" }}
                 indexScale={{ type: "band", round: true }}
-                colors={"#FCAC11"}
                 axisRight={null}
                 axisBottom={{
                   tickSize: 5,

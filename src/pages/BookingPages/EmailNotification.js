@@ -1,4 +1,5 @@
 import React from "react";
+import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
@@ -25,32 +26,39 @@ export default function EmailNotification() {
                   <p className="font-semibold">2014-12-01</p>
                 </div>
               </div>
-              <Card />
-              <Card />
-              <Card />
+              <Card
+                title={"Delivery rate"}
+                rate={90}
+                l1="Delivered"
+                l2="3708 (90%)"
+                r1="Bounced"
+                r2="120 (10%)"
+                color=" #F5AB34"
+              />
+              <Card
+                title={"Open rate (OR)"}
+                rate={75}
+                l1="Opened"
+                l2="3090 (75%)"
+                r1="Unopened"
+                r2="120 (25%)"
+                color="#31B0E4"
+              />
+              <Card
+                title={"Click-to-open rate (CTOR)"}
+                rate={50}
+                l1="Clicked"
+                l2="2060 (50%)"
+                r1="Non-clicked"
+                r2="120 (50%)"
+                color="#80CDBE"
+              />
             </div>
           </div>
           <div className="div2"></div>
         </div>
       </div>
       <Footer />
-    </div>
-  );
-}
-
-function Card({ title, rate }) {
-  return (
-    <div className="rounded-lg bg-[#F0F0F0] shadow-lg w-[14rem] h-[17rem] overflow-hidden flex flex-col">
-      <div className="bg-[#FCAC11] flex items-center font-semibold justify-center h-[20%]">
-        Sent Emails
-      </div>
-      <div className="text-[#289D01] h-[60%] text-5xl font-semibold flex items-center justify-center">
-        4120
-      </div>
-      <div className="pl-6 pb-4 h-[20%]">
-        <p className="text-sm">Send time</p>
-        <p className="font-semibold">2014-12-01</p>
-      </div>
     </div>
   );
 }

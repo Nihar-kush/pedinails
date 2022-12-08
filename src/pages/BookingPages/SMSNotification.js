@@ -26,9 +26,33 @@ export default function SMSNotification() {
                   <p className="font-semibold">2014-12-01</p>
                 </div>
               </div>
-              <Card />
-              <Card />
-              <Card />
+              <Card
+                title={"Delivery rate"}
+                rate={90}
+                l1="Delivered"
+                l2="3708 (90%)"
+                r1="Bounced"
+                r2="120 (10%)"
+                color="#F5AB34"
+              />
+              <Card
+                title={"Open rate (OR)"}
+                rate={75}
+                l1="Opened"
+                l2="3090 (75%)"
+                r1="Unopened"
+                r2="120 (25%)"
+                color="#31B0E4"
+              />
+              <Card
+                title={"Click-to-open rate (CTOR)"}
+                rate={50}
+                l1="Clicked"
+                l2="2060 (50%)"
+                r1="Non-clicked"
+                r2="120 (50%)"
+                color="#80CDBE"
+              />
             </div>
           </div>
           <div className="div2"></div>
