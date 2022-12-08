@@ -76,7 +76,7 @@ export default function BookingDashboard() {
               </div>
             </div>
           </div>
-          <div className="div2 flex flex-col gap-2 py-4 px-4">
+          {/* <div className="div2 flex flex-col gap-2 py-4 px-4">
             <div className="p-6 rounded-[20px] flex flex-col bg-[#F0F0F0]">
               <img
                 src="/img/bell.png"
@@ -84,7 +84,7 @@ export default function BookingDashboard() {
                 className="w-10 hover:animate-pulse"
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer />

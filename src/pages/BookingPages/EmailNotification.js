@@ -3,6 +3,7 @@ import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
+
 export default function EmailNotification() {
   return (
     <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
@@ -55,7 +56,8 @@ export default function EmailNotification() {
               />
             </div>
           </div>
-          <div className="div2"></div>
+          <div className="div2">
+          </div>
         </div>
       </div>
       <Footer />
