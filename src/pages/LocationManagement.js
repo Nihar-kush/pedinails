@@ -3,6 +3,9 @@ import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import { ResponsiveChoropleth } from "@nivo/geo";
+import data from "../utils/mapData";
+import countries from "../world_countries.json";
 
 export default function LocationManagement() {
   const LM_data = [
@@ -180,7 +183,46 @@ export default function LocationManagement() {
                 <p className="text-[#6F6F6F] font-semibold text-2xl">
                   Map wise Revenue
                 </p>
-                <img src="/img/map.png" alt="" width={"600px"} />
+                <ResponsiveChoropleth
+                  data={data}
+                  features={countries.features}
+                  colors="YlOrBr"
+                  unknownColor="#666666"
+                  label="properties.name"
+                  valueFormat=".2s"
+                  projectionTranslation={[0.5, 0.5]}
+                  enableGraticule={true}
+                  graticuleLineColor="#dddddd"
+                  borderWidth={0.5}
+                  borderColor="#152538"
+                  domain={[0, 1000000]}
+                  // legends={[
+                  //   {
+                  //     anchor: "bottom-left",
+                  //     direction: "column",
+                  //     justify: true,
+                  //     translateX: 20,
+                  //     translateY: -100,
+                  //     itemsSpacing: 0,
+                  //     itemWidth: 94,
+                  //     itemHeight: 18,
+                  //     itemDirection: "left-to-right",
+                  //     itemTextColor: "#444444",
+                  //     itemOpacity: 0.85,
+                  //     symbolSize: 18,
+                  //     effects: [
+                  //       {
+                  //         on: "hover",
+                  //         style: {
+                  //           itemTextColor: "#000000",
+                  //           itemOpacity: 1,
+                  //         },
+                  //       },
+                  //     ],
+                  //   },
+                  // ]}
+                />
+                {/* <img src="/img/map.png" alt="" width={"600px"} /> */}
               </div>
             </div>
             <div className="flex flex-col w-[30%]">
