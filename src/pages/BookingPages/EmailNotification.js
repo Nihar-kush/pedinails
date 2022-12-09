@@ -212,6 +212,7 @@ export default function EmailNotification() {
                         />
                       </span>
                       <button
+                        onClick={() => setOpen(false)}
                         type="submit"
                         className="py-2 px-3 bg-[#00A8B3] text-white rounded-md"
                       >

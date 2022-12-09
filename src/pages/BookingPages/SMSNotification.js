@@ -211,6 +211,7 @@ export default function SMSNotification() {
                         />
                       </span>
                       <button
+                        onClick={() => setOpen(false)}
                         type="submit"
                         className="py-2 px-3 bg-[#00A8B3] text-white rounded-md"
                       >
