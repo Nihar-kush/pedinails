@@ -3,7 +3,6 @@ import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
-import { RadialBar } from "@nivo/radial-bar";
 
 export default function EmailNotification() {
   return (
@@ -15,7 +14,7 @@ export default function EmailNotification() {
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">
           <div className="div1 flex flex-col gap-3 p-2">
             <p className="text-3xl font-semibold">Email Report Overview</p>
-            <div className="cards flex h-[18rem] gap-5 items-center">
+            <div className="cards flex flex-col sm:flex-row  gap-5 items-center">
               <div className="rounded-lg bg-[#F0F0F0] shadow-lg w-[14rem] h-[17rem] overflow-hidden flex flex-col">
                 <div className="bg-[#FCAC11] flex items-center font-semibold justify-center h-[20%]">
                   Sent Emails
@@ -57,7 +56,10 @@ export default function EmailNotification() {
               />
             </div>
           </div>
-          <div className="div2"></div>
+          <div className="div2 invisible sm:visible flex flex-col gap-3 p-2 overflow-hidden rounded-lg">
+            <div className="left">s</div>
+            <div className="right">s</div>
+          </div>
         </div>
       </div>
       <Footer />

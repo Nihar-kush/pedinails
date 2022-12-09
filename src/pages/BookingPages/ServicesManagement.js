@@ -3,7 +3,7 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { pie_data } from "../../utils/pieData";
-import { ResponsivePieCanvas } from "@nivo/pie";
+import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
 
 export default function ServicesManagement() {
   const SM_data = [
@@ -58,12 +58,12 @@ export default function ServicesManagement() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 p-4 bg-[#FFFFFF]">
           <div className="div1 flex gap-4 sm:gap-0 sm:flex-row flex-col items-center sm:items-start">
-            <div className="flex sm:w-[50%] px-4">
+            <div className="flex sm:w-[50%] px-4 w-full">
               <div className="rounded-[20px] w-full h-[20rem] pt-4 flex flex-col gap-4 items-center bg-[#F0F0F0]">
                 <p className="text-xs font-semibold text-[#666666]">
                   Revenue per Service
                 </p>
-                <ResponsivePieCanvas
+                <ResponsivePie
                   height={"270"}
                   data={pie_data}
                   margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
@@ -98,12 +98,12 @@ export default function ServicesManagement() {
                 />
               </div>
             </div>
-            <div className="flex sm:w-[50%] px-4">
+            <div className="flex sm:w-[50%] px-4 w-full">
               <div className="rounded-[20px] w-full h-[20rem] pt-4 flex flex-col gap-4 items-center bg-[#F0F0F0]">
                 <p className="text-xs font-semibold text-[#666666]">
                   Customer per Service
                 </p>
-                <ResponsivePieCanvas
+                <ResponsivePie
                   height={"270"}
                   data={pie_data}
                   margin={{ top: 40, right: 40, bottom: 40, left: 40 }}

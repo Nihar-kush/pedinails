@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import { bar_data } from "../utils/barData";
 import { ResponsiveBar } from "@nivo/bar";
 import { pie_data } from "../utils/pieData";
-import { ResponsivePieCanvas } from "@nivo/pie";
+import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
 
 export default function SalesReport() {
   const SR_data = [
@@ -143,9 +143,9 @@ export default function SalesReport() {
                 <p className="text-xs font-semibold text-[#666666]">
                   Revenue per Service
                 </p>
-                <ResponsivePieCanvas
-                  height={"270"}
+                <ResponsivePie
                   data={pie_data}
+                  height={"270"}
                   margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
                   innerRadius={0.5}
                   padAngle={0.7}

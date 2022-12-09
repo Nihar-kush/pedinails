@@ -178,8 +178,8 @@ export default function LocationManagement() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-6 bg-[#FFFFFF]">
           <div className="div1 flex sm:flex-row flex-col gap-6">
-            <div className="flex w-[70%] ">
-              <div className="rounded-[20px] w-full shadow-[4.0px_8.0px_8.0px_#a1a1a15f] flex flex-col gap-4 p-6 bg-[#F0F0F0]">
+            <div className="flex sm:w-[70%] w-full">
+              <div className="rounded-[20px] w-full sm:h-auto h-full shadow-[4.0px_8.0px_8.0px_#a1a1a15f] flex flex-col gap-4 p-6 bg-[#F0F0F0]">
                 <p className="text-[#6F6F6F] font-semibold text-2xl">
                   Map wise Revenue
                 </p>
@@ -254,7 +254,7 @@ export default function LocationManagement() {
           </div>
 
           <div className="div2 flex py-4 px-2">
-            <div className="rounded-[20px] w-[80%] h-510 flex p-4 bg-[#F0F0F0]">
+            <div className="rounded-[20px] w-full sm:w-[80%] h-510 flex p-4 bg-[#F0F0F0]">
               <ResponsiveLine
                 data={LM_data}
                 margin={{ top: 50, right: 50, bottom: 50, left: 50 }}

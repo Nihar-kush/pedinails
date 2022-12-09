@@ -15,8 +15,8 @@ export default function BookingCalender() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 p-4 bg-[#FFFFFF] ">
           <div className="w-full flex items-center p-4 ">
-            <div className="rounded-[10px] w-full  overflow-hidden flex gap-3 shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
-              <div className="div1 w-[50%] ">
+            <div className="rounded-[10px] w-full  overflow-hidden flex flex-col sm:flex-row gap-3 shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
+              <div className="div1 sm:w-[50%] w-full">
                 <Calendar onChange={setDate} value={date} />
                 <div className=" w-full bg-white flex flex-row-reverse p-4">
                   <button
@@ -37,10 +37,16 @@ export default function BookingCalender() {
                         <input type="number" />
                       </div>
                       <div className="flex items-center justify-center gap-5">
-                        <button onClick={()=>setActive(false)} className="text-white py-2 px-4 rounded-md text-center bg-[#289D01]">
+                        <button
+                          onClick={() => setActive(false)}
+                          className="text-white py-2 px-4 rounded-md text-center bg-[#289D01]"
+                        >
                           Cancel
                         </button>
-                        <button onClick={()=>setActive(false)} className="text-white py-2 px-4 rounded-md text-center bg-[#FCAC11]">
+                        <button
+                          onClick={() => setActive(false)}
+                          className="text-white py-2 px-4 rounded-md text-center bg-[#FCAC11]"
+                        >
                           Ok
                         </button>
                       </div>

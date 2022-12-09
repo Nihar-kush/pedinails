@@ -51,7 +51,7 @@ export default function UserManagement() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">
           <div className="div1 flex gap-4 sm:gap-0 sm:flex-row flex-col items-center sm:items-start">
-            <div className="flex sm:w-[70%] px-4">
+            <div className="flex sm:w-[70%] px-4 w-full">
               <div className="rounded-[20px] w-full h-[21rem] flex shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
                 <ResponsiveLine
                   data={line_data}
@@ -128,7 +128,7 @@ export default function UserManagement() {
               <option value="">Latest</option>
               <option value="">Last</option>
             </select>
-            <div className="rounded-3xl flex items-center bg-[#F0F0F0] py-2 px-5">
+            <div className="invisible sm:visible rounded-3xl flex items-center bg-[#F0F0F0] py-2 px-5">
               <input
                 type="text"
                 placeholder="Search..."

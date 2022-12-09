@@ -1,7 +1,11 @@
+import { ResponsiveBar } from "@nivo/bar";
+import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
 import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import { bar_data } from "../utils/dashBarData";
+import { pie_data } from "../utils/dashPieData";
 
 export default function Home() {
   return (
@@ -75,15 +79,83 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="div3 row-span-2 flex sm:flex-row flex-col sm:gap-0 gap-10 ">
+          <div className="div3 invisible sm:visible row-span-2 flex sm:flex-row flex-col sm:gap-0 gap-10 ">
             <div className="flex flex-col w-[55%]">
               <p className="text-xl pb-5 text-[#676666]">Revenue Pie Chart </p>
-              <div className="flex justify-center">
-                <img src="/img/graph.png" alt="" />
-              </div>
+              <ResponsivePie
+                data={pie_data}
+                margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                innerRadius={0}
+                padAngle={0.7}
+                cornerRadius={3}
+                activeOuterRadiusOffset={8}
+                borderWidth={1}
+                borderColor={{
+                  from: "color",
+                  modifiers: [["darker", 0.2]],
+                }}
+                colors={{ scheme: "paired" }}
+                arcLinkLabelsSkipAngle={10}
+                arcLinkLabelsTextColor="#333333"
+                arcLinkLabelsThickness={2}
+                arcLinkLabelsColor={{ from: "color" }}
+                arcLabelsSkipAngle={10}
+                arcLabelsTextColor={{
+                  from: "color",
+                  modifiers: [["darker", 2]],
+                }}
+                legends={[
+                  {
+                    anchor: "bottom",
+                    direction: "row",
+                    justify: false,
+                    translateX: 0,
+                    translateY: 56,
+                    itemsSpacing: 20,
+                    itemWidth: 100,
+                    itemHeight: 18,
+                    itemTextColor: "#999",
+                    itemDirection: "left-to-right",
+                    itemOpacity: 1,
+                    symbolSize: 18,
+                    symbolShape: "circle",
+                    effects: [
+                      {
+                        on: "hover",
+                        style: {
+                          itemTextColor: "#000",
+                        },
+                      },
+                    ],
+                  },
+                ]}
+              />
             </div>
-            <div className="w-[45%]">
-              <img src="/img/chart.png" alt="" />
+            <div className="w-[45%] h-[27rem]">
+              <ResponsiveBar
+                data={bar_data}
+                keys={[
+                  "Online Revenue",
+                  "Cash Revenue",
+                  "Other Sources Revenue",
+                ]}
+                indexBy="source"
+                margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+                padding={0.3}
+                valueScale={{ type: "linear" }}
+                indexScale={{ type: "band", round: true }}
+                colors={{ scheme: "paired" }}
+                axisRight={null}
+                axisBottom={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legendOffset: 32,
+                }}
+                enableGridY={true}
+                enableGridX={true}
+                enableLabel={false}
+              />
             </div>
           </div>
         </div>

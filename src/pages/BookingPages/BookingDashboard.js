@@ -13,7 +13,7 @@ export default function BookingDashboard() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">
           <div className="div1 flex gap-4 sm:gap-0 sm:flex-row flex-col items-center sm:items-start">
-            <div className="flex sm:w-[45%] px-4">
+            <div className="flex sm:w-[45%] px-4 w-full">
               <div className="rounded-[20px] w-full h-[21rem] flex flex-col items-center py-2 bg-[#F0F0F0]">
                 <p className="text-xs font-semibold text-[#666666]">
                   Bookings this year
