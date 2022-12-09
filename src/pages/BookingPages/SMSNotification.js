@@ -33,7 +33,7 @@ export default function SMSNotification() {
     //   });
   };
   return (
-    <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
+    <div className=" bg-[#E9E9E9] h-full pt-4 overflow-scroll relative">
       <Navbar />
       <div className="MainContainer mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
         <Sidebar />
@@ -158,7 +158,7 @@ export default function SMSNotification() {
             </div>
             {open && (
               <div className="bg-[#7e7e7e85] flex items-center justify-center absolute top-0 left-0 z-50 h-full w-screen ">
-                <div className="animate-slide-in rounded-lg w-[35%] h-[75%] bg-white flex flex-col gap-5 p-4">
+                <div className="animate-slide-in  rounded-lg w-[35%] h-[75%] bg-white flex flex-col gap-5 p-4">
                   <p className="text-2xl flex items-center justify-between border-b-[0.8px]">
                     Compose
                     <GrClose
