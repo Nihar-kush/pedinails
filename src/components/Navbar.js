@@ -22,7 +22,7 @@ export default function Navbar() {
     },
   ];
   return (
-    <div className="navbar absolute mb-28 w-[98%] mx-4 drop-shadow-lg z-50">
+    <div className="navbar absolute mb-28 sm:w-[98%] sm:mx-4 drop-shadow-lg z-50">
       <div className="logo cursor-pointer flex justify-center">
         <img
           src={process.env.PUBLIC_URL + "/img/header_top.png"}
