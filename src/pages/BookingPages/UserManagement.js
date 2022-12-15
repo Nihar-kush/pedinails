@@ -1,10 +1,33 @@
 import { ResponsiveLine } from "@nivo/line";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { line_data } from "../../utils/lineData";
+import axios from "axios";
+
 export default function UserManagement() {
+  const [data, setData] = useState({});
+  const [usersData, setUsersData] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/analytics")
+      .then((response) => {
+        setData(response.data[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    axios
+      .get("http://localhost:4000/api/users")
+      .then((response) => {
+        setUsersData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
   const UM_data = [
     {
       id: 1,
@@ -99,8 +122,10 @@ export default function UserManagement() {
                 <div className="flex rounded-[20px] justify-between py-4 px-6 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Total Bookings</p>
-                    <p className="text-[0.6rem]">THIS MONTH</p>
-                    <p className="text-5xl text-black font-semibold">312</p>
+                    {/* <p className="text-[0.6rem]">THIS MONTH</p> */}
+                    <p className="text-5xl text-black font-semibold">
+                      {data.total_bookings}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (4).png" alt="" className="w-16" />
@@ -109,8 +134,10 @@ export default function UserManagement() {
                 <div className="flex rounded-[20px] justify-between py-4 px-6 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Total Memberships</p>
-                    <p className="text-[0.6rem]">THIS MONTH</p>
-                    <p className="text-5xl text-black font-semibold">125</p>
+                    {/* <p className="text-[0.6rem]">THIS MONTH</p> */}
+                    <p className="text-5xl text-black font-semibold">
+                      {data.total_memberships}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/customer.png" alt="" className="w-16" />
@@ -141,21 +168,32 @@ export default function UserManagement() {
               />
             </div>
           </div>
-          <div className="div3 flex flex-col gap-6 py-4 px-2 overflow-y-scroll scroll-smooth">
-            {UM_data.map((data) => {
-              return (
-                <div
-                  className="flex text-[#676666] text-xs sm:text-base p-6 rounded-[10px] justify-around items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
-                  key={data.id}
-                >
-                  <img src="/img/target.png" alt="" className="w-6" />
-                  <span className="text-center w-40">{data.name}</span>
-                  <span className="text-center w-40">{data.type}</span>
-                  <span className="text-center w-40">{data.date}</span>
-                  <img src="/img/bill.png" alt="" className="w-6" />
-                </div>
-              );
-            })}
+          <div className="div3 flex flex-col gap-6 py-4 px-2 h-[40rem] overflow-y-scroll scroll-smooth">
+            <div className="flex text-[#F0F0F0] text-xs sm:text-base font-semibold rounded-[10px] gap-8 p-6 items-center bg-[#4C4C4C] transition duration-75 ease-in-out shadow-md">
+              <img src="/img/target.png" alt="" className="w-7" />
+              <span className="text-center w-40">Username</span>
+              <span className="text-center w-40 ">Role</span>
+              <span className="text-center w-40">Phone</span>
+              <span className="text-center w-40">Email</span>
+            </div>
+            {usersData &&
+              usersData.map((data) => {
+                return (
+                  <div
+                    className="flex text-[#676666] text-xs sm:text-base rounded-[10px] gap-8 p-6 items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
+                    key={data.id}
+                  >
+                    <img src="/img/target.png" alt="" className="w-6" />
+                    <span className="text-center w-40">{data.name}</span>
+                    <span className="text-center w-40">{data.role}</span>
+                    <span className="text-center w-40">{data.phoneNumber}</span>
+                    <span className="text-center  flex flex-wrap">
+                      {data.email}
+                    </span>
+                    {/* <img src="/img/bill.png" alt="" className="w-6" /> */}
+                  </div>
+                );
+              })}
           </div>
         </div>
       </div>

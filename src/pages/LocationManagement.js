@@ -1,13 +1,37 @@
 import { ResponsiveLine } from "@nivo/line";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { ResponsiveChoropleth } from "@nivo/geo";
-import data from "../utils/mapData";
+// import data from "../utils/mapData";
 import countries from "../world_countries.json";
+import axios from "axios";
 
 export default function LocationManagement() {
+  const [data, setData] = useState([]);
+  const [locationCount, setLoctionCount] = useState("");
+  const [bookingsCount, setBookingsCount] = useState("");
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/analytics")
+      .then((response) => {
+        setBookingsCount(response.data[0].total_bookings);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    axios
+      .get("http://localhost:4000/api/location")
+      .then((response) => {
+        setLoctionCount(response.data.length);
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const LM_data = [
     {
       id: "x",
@@ -240,13 +264,17 @@ export default function LocationManagement() {
                 <div className="flex rounded-[20px] justify-center py-4 w-60 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col pb-6 text-[#676666]">
                     <p className="text-base">Total Bookings</p>
-                    <p className="text-5xl text-black font-semibold">2312</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {bookingsCount !== "" ? bookingsCount : "--"}
+                    </p>
                   </span>
                 </div>
                 <div className="flex rounded-[20px] justify-center py-4 w-60 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col pb-6 text-[#676666]">
                     <p className="text-base">Total Locations</p>
-                    <p className="text-5xl text-black font-semibold">35</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {locationCount !== "" ? locationCount : "--"}
+                    </p>
                   </span>
                 </div>
               </div>

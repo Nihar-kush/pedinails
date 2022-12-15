@@ -1,11 +1,24 @@
 import { ResponsiveBar } from "@nivo/bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { bar_data } from "../utils/SM_barData";
+// import { bar_data } from "../utils/SM_barData";
+import axios from "axios";
 
 export default function SMManagement() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/social")
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const SM_data = [
     {
       id: 1,
@@ -52,28 +65,29 @@ export default function SMManagement() {
               <p className="text-xs font-semibold text-[#666666]">
                 Social Media Analytics 2022
               </p>
-              <ResponsiveBar
-                data={bar_data}
-                groupMode="grouped"
-                keys={["Profile Views", "Likes", "Shares"]}
-                indexBy="platform"
-                colors={"#FCAC11"}
-                margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
-                padding={0.3}
-                innerPadding={5}
-                valueScale={{ type: "linear" }}
-                indexScale={{ type: "band", round: true }}
-                axisRight={null}
-                axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legendOffset: 32,
-                }}
-                enableGridY={true}
-                enableGridX={true}
-                enableLabel={false}
-              />
+              {data && (
+                <ResponsiveBar
+                  data={data}
+                  groupMode="grouped"
+                  keys={["Profile Views", "Likes", "Shares"]}
+                  indexBy="platform"
+                  margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+                  padding={0.3}
+                  innerPadding={5}
+                  valueScale={{ type: "linear" }}
+                  indexScale={{ type: "band", round: true }}
+                  axisRight={null}
+                  axisBottom={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legendOffset: 32,
+                  }}
+                  enableGridY={true}
+                  enableGridX={true}
+                  enableLabel={false}
+                />
+              )}
             </div>
           </div>
           <div className="div2 flex flex-col gap-6 py-4 px-2 overflow-y-scroll scroll-smooth">
@@ -84,24 +98,24 @@ export default function SMManagement() {
               <span className="text-center w-40">Last Posted on</span>
               <span className="text-center w-40">Likes</span>
             </div>
-            {SM_data.map((data) => {
+            {SM_data.map((item) => {
               return (
                 <div
                   className="flex text-[#676666] text-xs sm:text-base p-5 rounded-[10px] justify-around items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
-                  key={data.id}
+                  key={item.id}
                 >
-                  <img src={data.icon} alt="" className="w-7" />
-                  <span className="text-center w-40">{data.Platform}</span>
+                  <img src={item.icon} alt="" className="w-7" />
+                  <span className="text-center w-40">{item.Platform}</span>
                   <span
                     className={
                       "text-center w-40 " +
-                      (data.Subs < 0 ? "text-[#FF0000]" : "text-[#289D01]")
+                      (item.Subs < 0 ? "text-[#FF0000]" : "text-[#289D01]")
                     }
                   >
-                    {data.Subs}%
+                    {item.Subs}%
                   </span>
-                  <span className="text-center w-40">{data.date}</span>
-                  <span className="text-center w-40">{data.likes}</span>
+                  <span className="text-center w-40">{item.date}</span>
+                  <span className="text-center w-40">{item.likes}</span>
                 </div>
               );
             })}

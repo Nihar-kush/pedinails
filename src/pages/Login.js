@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 export default function Login() {
   const [nameOrMail, setNameOrMail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [pass, setPass] = useState("");
   const navigate = useNavigate();
@@ -14,16 +15,26 @@ export default function Login() {
 
   async function loginUser(e) {
     e.preventDefault();
-    // const response = await axios.post(
-    //   "https://floating-shore-92853.herokuapp.com/api/auth/login",
-    //   {
-    //     nameOrMail,
-    //     pass,  
-    //   }
-    // );
-    // const data = response.data;  
-    // console.log(data);
-    navigate("/Dashboard");
+    (nameOrMail || pass) === ""
+      ? alert("Please enter details")
+      : axios
+          .post("http://localhost:4000/api/auth/login", {
+            nameOrMail,
+            pass,
+          })
+          .then((response) => {
+            response.data.success === true
+              ? response.data.data.role === "superadmin"
+                ? navigate("/Dashboard")
+                : alert("Enter correct details")
+              : alert("Enter correct details");
+          })
+          .catch((error) => {
+            return error;
+          });
+    // const data = response.data;
+    // console.log(response);
+    // navigate("/Dashboard");
     // if (data) {
     //   navigate("/Dashboard");
     // }
@@ -58,12 +69,12 @@ export default function Login() {
           </button>
         </form>
         {/* {error && <span className="alert">Something went wrong!</span>} */}
-        <p>
+        {/* <p>
           Don't have an account?{" "}
           <Link to="/Register" className="text-[#F8B400] hover:text-[#b78600]">
             Register
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );

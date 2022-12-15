@@ -2,16 +2,11 @@ export const pie_data = [
   {
     id: "Online Revenue",
     label: "Online Revenue",
-    value: 154,
+    value: 1500,
   },
   {
-    id: "Csah Revenue",
-    label: "Csah Revenue",
-    value: 503,
-  },
-  {
-    id: "Other Sources",
-    label: "Other Sources",
-    value: 77,
+    id: "Cash Revenue",
+    label: "Cash Revenue",
+    value: 500,
   },
 ];

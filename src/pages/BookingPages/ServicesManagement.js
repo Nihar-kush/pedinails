@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { pie_data } from "../../utils/pieData";
+import axios from "axios";
 import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
 
 export default function ServicesManagement() {
+  const [pieData, setPieData] = useState(null);
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/client/services")
+      .then((response) => {
+        setPieData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const SM_data = [
     {
       id: 1,
@@ -63,39 +76,41 @@ export default function ServicesManagement() {
                 <p className="text-xs font-semibold text-[#666666]">
                   Revenue per Service
                 </p>
-                <ResponsivePie
-                  height={"270"}
-                  data={pie_data}
-                  margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-                  innerRadius={0.5}
-                  padAngle={0.7}
-                  cornerRadius={3}
-                  activeOuterRadiusOffset={8}
-                  enableArcLabels={false}
-                  enableArcLinkLabels={false}
-                  colors={{ scheme: "yellow_orange_red" }}
-                  borderColor={{
-                    from: "color",
-                    modifiers: [["darker", 0.6]],
-                  }}
-                  legends={[
-                    {
-                      anchor: "middle",
-                      direction: "row",
-                      justify: false,
-                      translateX: 14,
-                      translateY: -30,
-                      itemsSpacing: 15,
-                      itemWidth: 60,
-                      itemHeight: 14,
-                      itemTextColor: "#2c2c2c",
-                      itemDirection: "left-to-right",
-                      itemOpacity: 1,
-                      symbolSize: 14,
-                      symbolShape: "circle",
-                    },
-                  ]}
-                />
+                {pieData && (
+                  <ResponsivePie
+                    data={pieData}
+                    height={"270"}
+                    margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+                    innerRadius={0.5}
+                    padAngle={0.7}
+                    cornerRadius={3}
+                    activeOuterRadiusOffset={8}
+                    enableArcLabels={false}
+                    enableArcLinkLabels={false}
+                    colors={{ scheme: "yellow_orange_red" }}
+                    borderColor={{
+                      from: "color",
+                      modifiers: [["darker", 0.6]],
+                    }}
+                    legends={[
+                      {
+                        anchor: "middle",
+                        direction: "row",
+                        justify: false,
+                        translateX: -5,
+                        translateY: -30,
+                        itemsSpacing: 30,
+                        itemWidth: 60,
+                        itemHeight: 14,
+                        itemTextColor: "#2c2c2c",
+                        itemDirection: "left-to-right",
+                        itemOpacity: 1,
+                        symbolSize: 14,
+                        symbolShape: "circle",
+                      },
+                    ]}
+                  />
+                )}
               </div>
             </div>
             <div className="flex sm:w-[50%] px-4 w-full">
@@ -103,39 +118,41 @@ export default function ServicesManagement() {
                 <p className="text-xs font-semibold text-[#666666]">
                   Customer per Service
                 </p>
-                <ResponsivePie
-                  height={"270"}
-                  data={pie_data}
-                  margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-                  innerRadius={0.5}
-                  padAngle={0.7}
-                  cornerRadius={3}
-                  activeOuterRadiusOffset={8}
-                  enableArcLabels={false}
-                  enableArcLinkLabels={false}
-                  colors={{ scheme: "yellow_orange_red" }}
-                  borderColor={{
-                    from: "color",
-                    modifiers: [["darker", 0.6]],
-                  }}
-                  legends={[
-                    {
-                      anchor: "middle",
-                      direction: "row",
-                      justify: false,
-                      translateX: 14,
-                      translateY: -30,
-                      itemsSpacing: 15,
-                      itemWidth: 60,
-                      itemHeight: 14,
-                      itemTextColor: "#2c2c2c",
-                      itemDirection: "left-to-right",
-                      itemOpacity: 1,
-                      symbolSize: 14,
-                      symbolShape: "circle",
-                    },
-                  ]}
-                />
+                {pieData && (
+                  <ResponsivePie
+                    height={"270"}
+                    data={pieData}
+                    margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+                    innerRadius={0.5}
+                    padAngle={0.7}
+                    cornerRadius={3}
+                    activeOuterRadiusOffset={8}
+                    enableArcLabels={false}
+                    enableArcLinkLabels={false}
+                    colors={{ scheme: "yellow_orange_red" }}
+                    borderColor={{
+                      from: "color",
+                      modifiers: [["darker", 0.6]],
+                    }}
+                    legends={[
+                      {
+                        anchor: "middle",
+                        direction: "row",
+                        justify: false,
+                        translateX: 14,
+                        translateY: -30,
+                        itemsSpacing: 15,
+                        itemWidth: 60,
+                        itemHeight: 14,
+                        itemTextColor: "#2c2c2c",
+                        itemDirection: "left-to-right",
+                        itemOpacity: 1,
+                        symbolSize: 14,
+                        symbolShape: "circle",
+                      },
+                    ]}
+                  />
+                )}
               </div>
             </div>
           </div>

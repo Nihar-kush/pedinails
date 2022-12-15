@@ -1,10 +1,24 @@
 import { ResponsiveBar } from "@nivo/bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { bar_data } from "../../utils/barData";
+import axios from "axios";
+
 export default function BookingDashboard() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/bookings")
+      .then((response) => {
+        setData(response.data[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
@@ -18,39 +32,28 @@ export default function BookingDashboard() {
                 <p className="text-xs font-semibold text-[#666666]">
                   Bookings this year
                 </p>
-                <ResponsiveBar
-                  data={bar_data}
-                  keys={[
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "June",
-                    "July",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
-                  ]}
-                  indexBy="month"
-                  margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
-                  padding={0.3}
-                  valueScale={{ type: "linear" }}
-                  indexScale={{ type: "band", round: true }}
-                  colors="#FCAC11"
-                  axisRight={null}
-                  axisBottom={{
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legendOffset: 32,
-                  }}
-                  enableGridY={true}
-                  enableGridX={true}
-                  enableLabel={false}
-                />
+                {data && (
+                  <ResponsiveBar
+                    data={data.monthlyData}
+                    keys={["totalBookings"]}
+                    indexBy="month"
+                    margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+                    padding={0.3}
+                    valueScale={{ type: "linear" }}
+                    indexScale={{ type: "band", round: true }}
+                    colors="#FCAC11"
+                    axisRight={null}
+                    axisBottom={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                      legendOffset: 32,
+                    }}
+                    enableGridY={true}
+                    enableGridX={true}
+                    enableLabel={false}
+                  />
+                )}
               </div>
             </div>
             <div className="flex sm:w-[55%]">
@@ -58,7 +61,9 @@ export default function BookingDashboard() {
                 <div className="flex rounded-[20px] justify-between py-4 px-10 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Total Bookings</p>
-                    <p className="text-5xl text-black font-semibold">24</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {data ? data.totalBookings : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (3).png" alt="" className="w-16" />
@@ -67,7 +72,9 @@ export default function BookingDashboard() {
                 <div className="flex rounded-[20px] justify-between py-4 px-10 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Today's Bookings</p>
-                    <p className="text-5xl text-black font-semibold">12</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {data ? data.todaysBookings : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (4).png" alt="" className="w-16" />

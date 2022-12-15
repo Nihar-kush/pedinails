@@ -1,13 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
-import { bar_data } from "../utils/barData";
+// import { bar_data } from "../utils/barData";
 import { ResponsiveBar } from "@nivo/bar";
-import { pie_data } from "../utils/pieData";
+import axios from "axios";
+// import { pie_data } from "../utils/pieData";
 import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
 
 export default function SalesReport() {
+  const [barData, setBarData] = useState(null);
+  const [pieData, setPieData] = useState(null);
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/sales")
+      .then((response) => {
+        setBarData(response.data.monthlyData);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    axios
+      .get("http://localhost:4000/api/client/services")
+      .then((response) => {
+        setPieData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const SR_data = [
     {
       id: 1,
@@ -57,7 +80,6 @@ export default function SalesReport() {
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">
           <div className="div1  flex p-4 items-center justify-between">
             <select name="" id="" className="rounded-md p-1">
-              <option value="">Yearly</option>
               <option value="">Monthly</option>
               <option value="">Daily</option>
             </select>
@@ -77,39 +99,28 @@ export default function SalesReport() {
           <div className="div2 flex gap-4 sm:gap-0 sm:flex-row flex-col items-center sm:items-start">
             <div className="flex sm:w-[45%] px-4">
               <div className="rounded-[20px] w-full h-[21rem] flex shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
-                <ResponsiveBar
-                  data={bar_data}
-                  keys={[
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "June",
-                    "July",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
-                  ]}
-                  indexBy="month"
-                  margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
-                  padding={0.3}
-                  valueScale={{ type: "linear" }}
-                  indexScale={{ type: "band", round: true }}
-                  colors="#FCAC11"
-                  axisRight={null}
-                  axisBottom={{
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legendOffset: 32,
-                  }}
-                  enableGridY={true}
-                  enableGridX={true}
-                  enableLabel={false}
-                />
+                {barData && (
+                  <ResponsiveBar
+                    data={barData}
+                    keys={["totalSales"]}
+                    indexBy="month"
+                    margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+                    padding={0.3}
+                    valueScale={{ type: "linear" }}
+                    indexScale={{ type: "band", round: true }}
+                    colors="#FCAC11"
+                    axisRight={null}
+                    axisBottom={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                      legendOffset: 32,
+                    }}
+                    enableGridY={true}
+                    enableGridX={true}
+                    enableLabel={false}
+                  />
+                )}
               </div>
             </div>
             <div className="flex sm:w-[55%]">
@@ -143,39 +154,41 @@ export default function SalesReport() {
                 <p className="text-xs font-semibold text-[#666666]">
                   Revenue per Service
                 </p>
-                <ResponsivePie
-                  data={pie_data}
-                  height={"270"}
-                  margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-                  innerRadius={0.5}
-                  padAngle={0.7}
-                  cornerRadius={3}
-                  activeOuterRadiusOffset={8}
-                  enableArcLabels={false}
-                  enableArcLinkLabels={false}
-                  colors={{ scheme: "yellow_orange_red" }}
-                  borderColor={{
-                    from: "color",
-                    modifiers: [["darker", 0.6]],
-                  }}
-                  legends={[
-                    {
-                      anchor: "middle",
-                      direction: "row",
-                      justify: false,
-                      translateX: 14,
-                      translateY: -30,
-                      itemsSpacing: 15,
-                      itemWidth: 60,
-                      itemHeight: 14,
-                      itemTextColor: "#2c2c2c",
-                      itemDirection: "left-to-right",
-                      itemOpacity: 1,
-                      symbolSize: 14,
-                      symbolShape: "circle",
-                    },
-                  ]}
-                />
+                {pieData && (
+                  <ResponsivePie
+                    data={pieData}
+                    height={"270"}
+                    margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+                    innerRadius={0.5}
+                    padAngle={0.7}
+                    cornerRadius={3}
+                    activeOuterRadiusOffset={8}
+                    enableArcLabels={false}
+                    enableArcLinkLabels={false}
+                    colors={{ scheme: "yellow_orange_red" }}
+                    borderColor={{
+                      from: "color",
+                      modifiers: [["darker", 0.6]],
+                    }}
+                    legends={[
+                      {
+                        anchor: "middle",
+                        direction: "row",
+                        justify: false,
+                        translateX: -5,
+                        translateY: -30,
+                        itemsSpacing: 24,
+                        itemWidth: 60,
+                        itemHeight: 14,
+                        itemTextColor: "#2c2c2c",
+                        itemDirection: "left-to-right",
+                        itemOpacity: 1,
+                        symbolSize: 14,
+                        symbolShape: "circle",
+                      },
+                    ]}
+                  />
+                )}
               </div>
             </div>
             <div className="flex sm:w-[55%]">
@@ -203,7 +216,7 @@ export default function SalesReport() {
               </div>
             </div>
           </div>
-          <div className="div4 flex flex-col gap-6 py-4 px-2 overflow-y-scroll scroll-smooth">
+          {/* <div className="div4 flex flex-col gap-6 py-4 px-2 overflow-y-scroll scroll-smooth">
             {SR_data.map((data) => {
               return (
                 <div
@@ -218,7 +231,7 @@ export default function SalesReport() {
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer />

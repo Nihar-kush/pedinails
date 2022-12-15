@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
@@ -9,13 +9,24 @@ import { AiFillMail, AiTwotoneSetting } from "react-icons/ai";
 import { MdCall, MdDrafts, MdLabelImportantOutline } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
+import axios from "axios";
 
 export default function EmailNotification() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/client/emailstat")
+      .then((response) => {
+        setData(response.data[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,7 +59,7 @@ export default function EmailNotification() {
                   Sent Emails
                 </div>
                 <div className="text-[#289D01] h-[60%] text-5xl font-semibold flex items-center justify-center">
-                  4120
+                  {data.sent_emails}
                 </div>
                 <div className="pl-6 pb-4 h-[20%]">
                   <p className="text-sm">Send time</p>
@@ -57,7 +68,7 @@ export default function EmailNotification() {
               </div>
               <Card
                 title={"Delivery rate"}
-                rate={90}
+                rate={data.delivery_rate}
                 l1="Delivered"
                 l2="3708 (90%)"
                 r1="Bounced"
@@ -66,7 +77,7 @@ export default function EmailNotification() {
               />
               <Card
                 title={"Open rate (OR)"}
-                rate={75}
+                rate={data.open_rate}
                 l1="Opened"
                 l2="3090 (75%)"
                 r1="Unopened"
@@ -75,7 +86,7 @@ export default function EmailNotification() {
               />
               <Card
                 title={"Click-to-open rate (CTOR)"}
-                rate={50}
+                rate={data.clickToOpen_rate}
                 l1="Clicked"
                 l2="2060 (50%)"
                 r1="Non-clicked"

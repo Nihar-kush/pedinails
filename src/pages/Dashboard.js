@@ -1,13 +1,49 @@
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { bar_data } from "../utils/dashBarData";
-import { pie_data } from "../utils/dashPieData";
+// import { bar_data } from "../utils/dashBarData";
+// import { pie_data } from "../utils/dashPieData";
+import axios from "axios";
 
 export default function Home() {
+  const [data, setData] = useState({});
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/analytics")
+      .then((response) => {
+        setData(response.data[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const bar_data = [
+    {
+      source: "Cash Revenue",
+      "Cash Revenue": data.cash_revenue,
+    },
+    {
+      source: "Online Revenue",
+      "Online Revenue": data.online_revenue,
+    },
+  ];
+  const pie_data = [
+    {
+      id: "Online Revenue",
+      label: "Online Revenue",
+      value: data.online_revenue,
+    },
+    {
+      id: "Cash Revenue",
+      label: "Cash Revenue",
+      value: data.cash_revenue,
+    },
+  ];
+
   return (
     <div className="bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
@@ -28,35 +64,35 @@ export default function Home() {
               <img src="/img/s1.png" alt="" />
               <div className="text-center absolute right-[15%]">
                 <p className="text-2xl font-semibold">Total Order</p>
-                <p className="font-semibold">100</p>
+                <p className="font-semibold">{data.total_orders}</p>
               </div>
             </div>
             <div className="relative bg-[#F8B400] text-white text-4xl sm:w-[31.5%] w-full flex gap-5 items-center ">
               <img src="/img/s2.png" alt="" />
               <div className="text-center absolute right-[20%]">
                 <p className="text-2xl font-semibold">Approved</p>
-                <p className="font-semibold">60</p>
+                <p className="font-semibold">{data.approved_orders}</p>
               </div>
             </div>
             <div className="relative bg-[#99AB35] text-white text-4xl sm:w-[31.5%] w-full flex gap-5 items-center ">
               <img src="/img/s3.png" alt="" />
               <div className="text-center absolute right-[20%]">
                 <p className="text-2xl font-semibold">Completed</p>
-                <p className="font-semibold">40</p>
+                <p className="font-semibold">{data.completed_orders}</p>
               </div>
             </div>
             <div className="relative bg-[#F8B400] text-white text-4xl sm:w-[31.5%] w-full flex gap-5 items-center">
               <img src="/img/s4.png" alt="" />
               <div className="text-center absolute right-[20%]">
                 <p className="text-2xl font-semibold">Pending</p>
-                <p className="font-semibold">40</p>
+                <p className="font-semibold">{data.pending_orders}</p>
               </div>
             </div>
             <div className="relative bg-[#99AB35] text-white text-4xl sm:w-[31.5%] w-full flex gap-5 items-center ">
               <img src="/img/s5.png" alt="" />
               <div className="text-center absolute right-[20%]">
                 <p className="text-2xl font-semibold">Revenue</p>
-                <p className="font-semibold">200$</p>
+                <p className="font-semibold">{data.total_revenue}$</p>
               </div>
             </div>
             <div className="branch flex relative w-full sm:w-[31.5%]  justify-end items-center">
@@ -131,7 +167,7 @@ export default function Home() {
                 ]}
               />
             </div>
-            <div className="w-[45%] h-[27rem]">
+            <div className="w-[45%] h-[28rem]">
               <ResponsiveBar
                 data={bar_data}
                 keys={[
@@ -141,7 +177,7 @@ export default function Home() {
                 ]}
                 indexBy="source"
                 margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
-                padding={0.3}
+                padding={0.5}
                 valueScale={{ type: "linear" }}
                 indexScale={{ type: "band", round: true }}
                 colors={{ scheme: "paired" }}
