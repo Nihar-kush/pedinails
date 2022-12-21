@@ -1,13 +1,36 @@
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
-import { bar_data } from "../../utils/barData";
 import { line_data } from "../../utils/lineData";
+import { BASE_SERVER_URL } from "../../config";
+import axios from "axios";
 
 export default function Payments() {
+  const [data, setData] = useState([]);
+  const [analytic, setAnalytic] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_SERVER_URL}/api/transactions`)
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    axios
+      .get(`${BASE_SERVER_URL}/api/analytics`)
+      .then((response) => {
+        setAnalytic(response.data[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const P_data = [
     {
       id: 1,
@@ -129,7 +152,11 @@ export default function Payments() {
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Total Revenue</p>
                     <p className="text-[0.6rem]">THIS WEEK</p>
-                    <p className="text-5xl text-black font-semibold">31200</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {analytic.revenue_this_week
+                        ? analytic.revenue_this_week
+                        : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (4).png" alt="" className="w-16" />
@@ -139,7 +166,11 @@ export default function Payments() {
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Payments Pending</p>
                     <p className="text-[0.6rem]">THIS WEEK</p>
-                    <p className="text-5xl text-black font-semibold">12</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {analytic.pending_payments_this_week
+                        ? analytic.pending_payments_this_week
+                        : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/customer.png" alt="" className="w-16" />
@@ -149,14 +180,17 @@ export default function Payments() {
             </div>
           </div>
           <div className="div2 flex p-4 items-center justify-between">
-            <select
+            {/* <select
               name=""
               id=""
               className="rounded-md py-1 px-3 cursor-pointer"
             >
               <option value="">Latest</option>
               <option value="">Last</option>
-            </select>
+            </select> */}
+            <span className="text-xl font-semibold text-[#2e2e2e]">
+              Payments
+            </span>
             <div className="invisible sm:visible rounded-3xl flex items-center bg-[#F0F0F0] py-2 px-5">
               <input
                 type="text"
@@ -170,18 +204,28 @@ export default function Payments() {
               />
             </div>
           </div>
-          <div className="div3 flex flex-col gap-6 py-4 px-2 overflow-y-scroll scroll-smooth">
-            {P_data.map((data) => {
+          <div className="div3 flex flex-col gap-6 py-4 h-[30rem] px-2 overflow-y-scroll scroll-smooth">
+            <div className="flex text-[#F0F0F0] text-xs sm:text-base font-semibold p-5 rounded-[10px] justify-around items-center bg-[#4C4C4C] transition duration-75 ease-in-out shadow-md">
+              <img src="/img/target.png" alt="" className="w-7" />
+              <span className="text-center w-56">Payment Id</span>
+              <span className="text-center w-56">User Id</span>
+              <span className="text-center w-40 ">Amount</span>
+              <span className="text-center w-40">Date</span>
+            </div>
+            {data.map((data) => {
+              const date = new Date(data.createdAt);
               return (
                 <div
                   className="flex text-[#676666] text-xs sm:text-base p-6 rounded-[10px] justify-around items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
-                  key={data.id}
+                  key={data._id}
                 >
                   <img src="/img/target.png" alt="" className="w-6" />
-                  <span className="text-center w-40">{data.name}</span>
-                  <span className="text-center w-40">{data.amount}</span>
-                  <span className="text-center w-40">{data.date}</span>
-                  <img src="/img/bill.png" alt="" className="w-6" />
+                  <span className="text-center w-56">{data.userId}</span>
+                  <span className="text-center w-56">{data._id}</span>
+                  <span className="text-center w-40">${data.cost}</span>
+                  <span className="text-center w-40">
+                    {date.toLocaleDateString()}
+                  </span>
                 </div>
               );
             })}

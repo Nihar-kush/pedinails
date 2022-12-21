@@ -6,15 +6,19 @@ import Sidebar from "../components/Sidebar";
 import { ResponsiveChoropleth } from "@nivo/geo";
 // import data from "../utils/mapData";
 import countries from "../world_countries.json";
+import { BASE_SERVER_URL } from "../config";
 import axios from "axios";
 
 export default function LocationManagement() {
   const [data, setData] = useState([]);
-  const [locationCount, setLoctionCount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [locationCount, setLocationCount] = useState("");
+  const [location, setLocation] = useState("");
   const [bookingsCount, setBookingsCount] = useState("");
+
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/analytics")
+      .get(`${BASE_SERVER_URL}/api/analytics`)
       .then((response) => {
         setBookingsCount(response.data[0].total_bookings);
       })
@@ -22,9 +26,9 @@ export default function LocationManagement() {
         console.error(error);
       });
     axios
-      .get("http://localhost:4000/api/location")
+      .get(`${BASE_SERVER_URL}/api/location`)
       .then((response) => {
-        setLoctionCount(response.data.length);
+        setLocationCount(response.data.length);
         setData(response.data);
       })
       .catch((error) => {
@@ -32,167 +36,25 @@ export default function LocationManagement() {
       });
   }, []);
 
-  const LM_data = [
-    {
-      id: "x",
-      data: [
-        {
-          x: "Jan",
-          y: 33,
-        },
-        {
-          x: "Feb",
-          y: 35,
-        },
-        {
-          x: "Mar",
-          y: 55,
-        },
-        {
-          x: "Apr",
-          y: 283,
-        },
-        {
-          x: "May",
-          y: 75,
-        },
-        {
-          x: "June",
-          y: 238,
-        },
-        {
-          x: "July",
-          y: 72,
-        },
-        {
-          x: "Aug",
-          y: 246,
-        },
-        {
-          x: "Sep",
-          y: 19,
-        },
-        {
-          x: "Oct",
-          y: 139,
-        },
-        {
-          x: "Nov",
-          y: 277,
-        },
-        {
-          x: "Dec",
-          y: 256,
-        },
-      ],
-    },
-    {
-      id: "y",
-      data: [
-        {
-          x: "Jan",
-          y: 250,
-        },
-        {
-          x: "Feb",
-          y: 182,
-        },
-        {
-          x: "Mar",
-          y: 13,
-        },
-        {
-          x: "Apr",
-          y: 46,
-        },
-        {
-          x: "May",
-          y: 79,
-        },
-        {
-          x: "June",
-          y: 143,
-        },
-        {
-          x: "July",
-          y: 88,
-        },
-        {
-          x: "Aug",
-          y: 0,
-        },
-        {
-          x: "Sep",
-          y: 175,
-        },
-        {
-          x: "Oct",
-          y: 179,
-        },
-        {
-          x: "Nov",
-          y: 54,
-        },
-        {
-          x: "Dec",
-          y: 173,
-        },
-      ],
-    },
-    {
-      id: "z",
-      data: [
-        {
-          x: "Jan",
-          y: 40,
-        },
-        {
-          x: "Feb",
-          y: 45,
-        },
-        {
-          x: "Mar",
-          y: 65,
-        },
-        {
-          x: "Apr",
-          y: 383,
-        },
-        {
-          x: "May",
-          y: 85,
-        },
-        {
-          x: "June",
-          y: 218,
-        },
-        {
-          x: "July",
-          y: 62,
-        },
-        {
-          x: "Aug",
-          y: 346,
-        },
-        {
-          x: "Sep",
-          y: 49,
-        },
-        {
-          x: "Oct",
-          y: 239,
-        },
-        {
-          x: "Nov",
-          y: 237,
-        },
-        {
-          x: "Dec",
-          y: 216,
-        },
-      ],
-    },
-  ];
+  const addLocation = () => {
+    console.log(location);
+    if (location === "") {
+      return;
+    }
+    setLoading(true);
+    axios
+      .post(`${BASE_SERVER_URL}/api/location`, { location: location })
+      .then((response) => {
+        setLoading(false);
+        if (response.data.success) {
+          alert(`Added Branch in ${location} successfully`);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
+      });
+  };
 
   return (
     <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
@@ -208,6 +70,7 @@ export default function LocationManagement() {
                   Map wise Revenue
                 </p>
                 <ResponsiveChoropleth
+                  onClick={(data) => setLocation(data.label)}
                   data={data}
                   features={countries.features}
                   colors="YlOrBr"
@@ -254,8 +117,17 @@ export default function LocationManagement() {
                   <span className="flex flex-col gap-4 w-full pb-6 text-[#676666]">
                     <p className="text-base">Add Locations</p>
                     <div className=" flex flex-col gap-3 text-black font-semibold">
-                      <input type="text" className="rounded-lg p-2" />
-                      <button className="py-2 px-4 text-white rounded-lg bg-[#FCAC11] cursor-pointer">
+                      <input
+                        readOnly={true}
+                        placeholder="Pick from Map"
+                        type="text"
+                        className="rounded-lg p-2"
+                        value={location}
+                      />
+                      <button
+                        onClick={addLocation}
+                        className="py-2 px-4 text-white rounded-lg bg-[#FCAC11] cursor-pointer"
+                      >
                         Add
                       </button>
                     </div>
@@ -281,7 +153,7 @@ export default function LocationManagement() {
             </div>
           </div>
 
-          <div className="div2 flex py-4 px-2">
+          {/* <div className="div2 flex py-4 px-2">
             <div className="rounded-[20px] w-full sm:w-[80%] h-510 flex p-4 bg-[#F0F0F0]">
               <ResponsiveLine
                 data={LM_data}
@@ -323,7 +195,7 @@ export default function LocationManagement() {
                 useMesh={true}
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer />

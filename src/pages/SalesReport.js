@@ -2,75 +2,58 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
-// import { bar_data } from "../utils/barData";
+import { CSVLink } from "react-csv";
 import { ResponsiveBar } from "@nivo/bar";
 import axios from "axios";
-// import { pie_data } from "../utils/pieData";
-import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
+import { ResponsiveLine } from "@nivo/line";
+import { ResponsivePie } from "@nivo/pie";
+import { BASE_SERVER_URL } from "../config";
 
 export default function SalesReport() {
-  const [barData, setBarData] = useState(null);
-  const [pieData, setPieData] = useState(null);
+  const [barData, setBarData] = useState([]);
+  const [overallData, setOverallData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+  const [lineData, setLineData] = useState([]);
+
+  const headers = [
+    { label: "ID", key: "_id" },
+    { label: "Month", key: "month" },
+    { label: "Total Sales", key: "totalSales" },
+    { label: "Total Units", key: "totalUnits" },
+  ];
+  const csvReport = {
+    headers: headers,
+    filename: "Pedinails_Sales_Report.csv",
+  };
+
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/sales")
+      .get(`${BASE_SERVER_URL}/api/sales/sales`)
       .then((response) => {
         setBarData(response.data.monthlyData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    axios
-      .get("http://localhost:4000/api/client/services")
-      .then((response) => {
-        setPieData(response.data);
+        setOverallData(response.data);
+        setLineData([
+          {
+            id: "Revenue",
+            data: response.data.dailyData.map((data) => ({
+              x: data.date,
+              y: data.totalSales,
+            })),
+          },
+        ]);
+        setPieData(
+          Object.keys(response.data.salesByService).map((key) => ({
+            id: key,
+            label: key,
+            value: response.data.salesByService[key],
+          }))
+        );
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
 
-  const SR_data = [
-    {
-      id: 1,
-      name: "Mahima",
-      amount: "Rs 1700",
-      date: "24 December 2022",
-    },
-    {
-      id: 2,
-      name: "Simran",
-      amount: "Rs 1850",
-      date: "12 November 2022",
-    },
-    {
-      id: 3,
-      name: "Vidhi",
-      amount: "Rs 450",
-      date: "21 November 2022",
-    },
-    {
-      id: 4,
-      name: "Kanika",
-      amount: "Rs 2560",
-      date: "12 November 2022",
-    },
-    {
-      id: 5,
-      name: "Ishika",
-      amount: "Rs 2000",
-      date: "12 November 2022",
-    },
-    {
-      id: 6,
-      name: "Vidhi",
-      amount: "Rs 1200",
-      date: "12 November 2022",
-    },
-  ];
-
-  const [activeExport, setActiveExport] = useState(false);
   return (
     <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
@@ -79,23 +62,19 @@ export default function SalesReport() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 flex flex-col gap-8 p-4 bg-[#FFFFFF]">
           <div className="div1  flex p-4 items-center justify-between">
-            <select name="" id="" className="rounded-md p-1">
-              <option value="">Monthly</option>
-              <option value="">Daily</option>
-            </select>
-            <button
-              className="relative rounded-lg flex justify-center text-white bg-[#FCAC11] py-2 px-5 cursor-pointer"
-              onClick={() => setActiveExport(!activeExport)}
+            <span className="text-xl font-semibold text-[#2e2e2e]">
+              Total Sales:
+            </span>
+            <CSVLink
+              className="relative rounded-lg flex justify-center text-white bg-[#FCAC11] py-2 px-5 cursor-pointer ml-auto"
+              data={barData}
+              headers={csvReport.headers}
+              filename={csvReport.filename}
             >
               Export
-              {activeExport && (
-                <div className="absolute mt-12 bg-[#F1F1F1] text-black top-0 rounded-lg overflow-hidden flex flex-col text-center">
-                  <p className="py-2 px-5 hover:bg-[#2e2e2e30]">Excel</p>
-                  <p className="py-2 px-5 hover:bg-[#2e2e2e30]">CSV</p>
-                </div>
-              )}
-            </button>
+            </CSVLink>
           </div>
+
           <div className="div2 flex gap-4 sm:gap-0 sm:flex-row flex-col items-center sm:items-start">
             <div className="flex sm:w-[45%] px-4">
               <div className="rounded-[20px] w-full h-[21rem] flex shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
@@ -128,8 +107,9 @@ export default function SalesReport() {
                 <div className="flex rounded-[20px] gap-6 py-4 px-6 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Total Revenue</p>
-                    <p className="text-[0.6rem]">THIS WEEK</p>
-                    <p className="text-5xl text-black font-semibold">31200</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {overallData ? overallData.yearlySalesTotal : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (4).png" alt="" className="w-16" />
@@ -138,8 +118,9 @@ export default function SalesReport() {
                 <div className="flex rounded-[20px] gap-6 py-4 px-6 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Payment in Cash</p>
-                    <p className="text-[0.6rem]">THIS WEEK</p>
-                    <p className="text-5xl text-black font-semibold">12000</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {overallData ? overallData.totalCashPayments : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/customer.png" alt="" className="w-16" />
@@ -148,6 +129,7 @@ export default function SalesReport() {
               </div>
             </div>
           </div>
+
           <div className="div3 flex gap-4 sm:gap-0 sm:flex-row flex-col items-center sm:items-start">
             <div className="flex sm:w-[45%] px-4">
               <div className="rounded-[20px] w-full h-[21rem] flex flex-col gap-4 items-center pt-5 shadow-[4.0px_8.0px_8.0px_#a1a1a15f] bg-[#F0F0F0]">
@@ -196,8 +178,9 @@ export default function SalesReport() {
                 <div className="flex rounded-[20px] gap-6 py-4 px-6 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Payment Online</p>
-                    <p className="text-[0.6rem]">THIS WEEK</p>
-                    <p className="text-5xl text-black font-semibold">31200</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {overallData ? overallData.totalOnlinePayments : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (3).png" alt="" className="w-16" />
@@ -206,8 +189,9 @@ export default function SalesReport() {
                 <div className="flex rounded-[20px] gap-6 py-4 px-6 items-center bg-[#F0F0F0] shadow-[4.0px_8.0px_8.0px_#a1a1a15f]">
                   <span className="flex flex-col justify-around pb-6 text-[#676666]">
                     <p className="text-base">Payments Pending</p>
-                    <p className="text-[0.6rem]">THIS WEEK</p>
-                    <p className="text-5xl text-black font-semibold">12</p>
+                    <p className="text-5xl text-black font-semibold">
+                      {overallData ? overallData.totalPendingPayments : "--"}
+                    </p>
                   </span>
                   <span className="flex items-center">
                     <img src="/img/calendar (4).png" alt="" className="w-16" />
@@ -216,6 +200,39 @@ export default function SalesReport() {
               </div>
             </div>
           </div>
+
+          {/* <div className="rounded-[20px] ml-3 w-full h-[30rem] flex shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
+            <ResponsiveLine
+              data={lineData}
+              margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+              xScale={{ type: "point" }}
+              yScale={{
+                type: "linear",
+                stacked: true,
+                reverse: false,
+              }}
+              yFormat=" >-.2f"
+              curve="basis"
+              axisTop={null}
+              axisRight={null}
+              axisBottom={null}
+              axisLeft={{
+                orient: "left",
+                tickSize: 5,
+                tickPadding: 10,
+                tickRotation: 0,
+                legendOffset: -40,
+                legendPosition: "middle",
+              }}
+              colors={"#FCAC11"}
+              pointSize={10}
+              pointColor={{ theme: "background" }}
+              pointBorderWidth={2}
+              pointBorderColor={{ from: "serieColor" }}
+              pointLabelYOffset={-12}
+              useMesh={true}
+            />
+          </div> */}
           {/* <div className="div4 flex flex-col gap-6 py-4 px-2 overflow-y-scroll scroll-smooth">
             {SR_data.map((data) => {
               return (

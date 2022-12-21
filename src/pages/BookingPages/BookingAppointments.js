@@ -3,12 +3,13 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../../config";
 
 export default function BookingAppointments() {
   const [data, setData] = useState(null);
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/bookings/appointments")
+      .get(`${BASE_SERVER_URL}/api/bookings/appointments`)
       .then((response) => {
         setData(response.data);
       })

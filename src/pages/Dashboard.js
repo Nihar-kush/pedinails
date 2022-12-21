@@ -7,12 +7,16 @@ import Sidebar from "../components/Sidebar";
 // import { bar_data } from "../utils/dashBarData";
 // import { pie_data } from "../utils/dashPieData";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../config";
+// import jwt from "jsonwebtoken";
 
 export default function Home() {
   const [data, setData] = useState({});
   useEffect(() => {
+    // const token = localStorage.getItem("token");
+    // console.log(token);
     axios
-      .get("http://localhost:4000/api/analytics")
+      .get(`${BASE_SERVER_URL}/api/analytics`)
       .then((response) => {
         setData(response.data[0]);
       })

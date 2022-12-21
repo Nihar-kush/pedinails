@@ -10,38 +10,52 @@ import { MdCall, MdDrafts, MdLabelImportantOutline } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 import { GrClose } from "react-icons/gr";
+import { BASE_SERVER_URL } from "../../config";
 
 export default function SMSNotification() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState("");
   const [open, setOpen] = useState(false);
   const [data, setData] = useState({});
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/client/smsstat")
+      .get(`${BASE_SERVER_URL}/api/client/smsstat`)
       .then((response) => {
-        setData(response.data);
+        setData(response.data[0]);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+
+    axios
+      .get(`${BASE_SERVER_URL}/api/client/sms`)
+      .then((response) => {
+        setMessages(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // axios
-    //   .post("/send-email", {
-    //     name,
-    //     email,
-    //     message,
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    setLoading(true);
+    axios
+      .post(`${BASE_SERVER_URL}/api/client/send-sms`, {
+        number,
+        message,
+      })
+      .then((response) => {
+        setLoading(false);
+        alert(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setMessage("");
+    setOpen(false);
   };
   return (
     <div className=" bg-[#E9E9E9] h-full pt-4 overflow-scroll relative">
@@ -118,7 +132,7 @@ export default function SMSNotification() {
                 <Link to="">
                   <li className=" p-5 pl-0 text-[#676666] hover:text-black flex items-center gap-4 cursor-pointer border-b-[0.8px]">
                     <AiFillMail className="text-xl" />
-                    Sent Mail
+                    Sent Messages
                   </li>
                 </Link>
                 <Link to="">
@@ -154,8 +168,8 @@ export default function SMSNotification() {
             </div>
             <div className="right w-[75%] bg-white">
               <div className="bg-[#FCAC11] rounded-md p-4 h-20 flex items-center justify-between">
-                <span className="text-3xl text-white">Inbox</span>
-                <span className="flex items-center h-[80%] rounded-[0.25rem] overflow-hidden">
+                <span className="text-3xl text-white">Messages</span>
+                {/* <span className="flex items-center h-[80%] rounded-[0.25rem] overflow-hidden">
                   <input
                     type="text"
                     placeholder="Search..."
@@ -164,13 +178,31 @@ export default function SMSNotification() {
                   <button className="h-full bg-[#289D01] text-white px-[0.5rem]">
                     <HiOutlineSearch className="" />
                   </button>
-                </span>
+                </span> */}
+              </div>
+              <div className="bg-[#F0F0F0] h-[87%] flex flex-col gap-1 overflow-y-scroll">
+                {messages &&
+                  messages.map((data) => {
+                    return (
+                      <div
+                        className="flex text-[#676666] text-xs sm:text-base p-5 rounded-[10px] gap-10 items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
+                        key={data.id}
+                      >
+                        <span className=" w-[16.5rem] truncate">
+                          To : {data.to}
+                        </span>
+                        <span className="w-[25rem] truncate">
+                          {data.message}
+                        </span>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
             {open && (
-              <div className="bg-[#7e7e7e85] flex items-center justify-center absolute top-0 left-0 z-50 h-full w-screen ">
-                <div className="animate-slide-in  rounded-lg w-[35%] h-[75%] bg-white flex flex-col gap-5 p-4">
-                  <p className="text-2xl flex items-center justify-between border-b-[0.8px]">
+              <div className="bg-[#7e7e7e85] flex items-center justify-center fixed top-0 left-0 z-50 h-screen w-screen ">
+                <div className="animate-slide-in  rounded-lg w-[35%] h-fit bg-white flex flex-col gap-5 p-4">
+                  <p className="text-2xl px-3 flex items-center justify-between border-b-[0.8px]">
                     Compose
                     <GrClose
                       className="cursor-pointer"
@@ -184,49 +216,28 @@ export default function SMSNotification() {
                     <label className="w-20 p-3">
                       To:{" "}
                       <input
-                        className="border-[1px] w-80 rounded-md bg-[#F8F8F8]"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </label>
-                    <label className="w-20 p-3">
-                      Subject:{" "}
-                      <input
+                        required
                         className="border-[1px] w-80 rounded-md bg-[#F8F8F8]"
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={number}
+                        onChange={(e) => setNumber(e.target.value)}
                       />
                     </label>
                     <label className="w-20 p-3">
                       Message:{" "}
                       <textarea
+                        required
                         className="border-[1px] h-40 w-80 rounded-md bg-[#F8F8F8]"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                       />
                     </label>
-                    <div className="flex gap-2">
-                      <span className="py-2 px-3 flex items-center bg-[#EEEEEE] text-white rounded-md cursor-pointer">
-                        <label
-                          htmlFor="file"
-                          className="text-black flex items-center gap-1 cursor-pointer"
-                        >
-                          <FaPlus className="" /> Attachment
-                        </label>
-                        <input
-                          type="file"
-                          id="file"
-                          style={{ display: "none" }}
-                        />
-                      </span>
+                    <div className="flex px-3">
                       <button
-                        onClick={() => setOpen(false)}
                         type="submit"
                         className="py-2 px-3 bg-[#00A8B3] text-white rounded-md"
                       >
-                        Send
+                        {loading ? "Sending" : "Send"}
                       </button>
                     </div>
                   </form>

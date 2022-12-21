@@ -5,12 +5,13 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 // import { bar_data } from "../utils/SM_barData";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../config";
 
 export default function SMManagement() {
   const [data, setData] = useState(null);
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/social")
+      .get(`${BASE_SERVER_URL}/api/social`)
       .then((response) => {
         setData(response.data);
       })

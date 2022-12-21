@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../config";
 // var imgbbUploader = require("imgbb-uploader");
 
 export default function BannerManagement() {
@@ -18,7 +19,7 @@ export default function BannerManagement() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/banner")
+      .get(`${BASE_SERVER_URL}/api/banner`)
       .then((response) => {
         setData(response.data);
       })
@@ -68,7 +69,7 @@ export default function BannerManagement() {
       url: url,
     };
     axios
-      .post("http://localhost:4000/api/banner", newData)
+      .post(`${BASE_SERVER_URL}/api/banner`, newData)
       .then((response) => {
         if (response.data.success) {
           setData((prev) => [...prev, newData]);

@@ -5,12 +5,13 @@ import Sidebar from "../../components/Sidebar";
 import { pie_data } from "../../utils/pieData";
 import axios from "axios";
 import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
+import { BASE_SERVER_URL } from "../../config";
 
 export default function ServicesManagement() {
   const [pieData, setPieData] = useState(null);
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/client/services")
+      .get(`${BASE_SERVER_URL}/api/client/services`)
       .then((response) => {
         setPieData(response.data);
       })

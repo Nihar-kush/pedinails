@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { HiOutlineTrash } from "react-icons/hi";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../../config";
 
 export default function EmployeeManagement() {
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function EmployeeManagement() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/bookings/employees")
+      .get(`${BASE_SERVER_URL}/api/bookings/employees`)
       .then((response) => {
         setData(response.data);
       })
@@ -26,15 +27,13 @@ export default function EmployeeManagement() {
 
   const deleteEmp = (id) => {
     axios
-      .post("http://localhost:4000/api/bookings/employees/delete", { id: id })
+      .post(`${BASE_SERVER_URL}/api/bookings/employees/delete`, { id: id })
       .then((response) => {
         if (response.data.success) {
           alert("Employee deleted successfully");
         }
-        setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
         console.error(error);
       });
   };
@@ -49,7 +48,7 @@ export default function EmployeeManagement() {
       category: category,
     };
     axios
-      .post("http://localhost:4000/api/bookings/employees", data)
+      .post(`${BASE_SERVER_URL}/api/bookings/employees`, data)
       .then((response) => {
         if (response.data.success) {
           setData((prev) => [...prev, data]);

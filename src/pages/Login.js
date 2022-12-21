@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { BASE_SERVER_URL } from "../config";
 
 export default function Login() {
   const [nameOrMail, setNameOrMail] = useState("");
@@ -18,7 +19,7 @@ export default function Login() {
     (nameOrMail || pass) === ""
       ? alert("Please enter details")
       : axios
-          .post("http://localhost:4000/api/auth/login", {
+          .post(`${BASE_SERVER_URL}/api/auth/login`, {
             nameOrMail,
             pass,
           })

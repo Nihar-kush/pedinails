@@ -13,7 +13,7 @@ export default function Settings() {
         {/* MAIN VIEW */}
         <div className="Main flex flex-col gap-10 col-span-4 sm:col-span-3 px-8 py-4 bg-[#FFFFFF]">
           <p className="text-2xl  border-b-[1px] p-4">Settings</p>
-          {/* <div className="rounded-lg shadow-lg p-4 flex flex-col gap-20 bg-[#F0F0F0]">
+          <div className="rounded-lg shadow-lg p-4 flex flex-col gap-20 bg-[#F0F0F0]">
             <div>
               <p className="text-xl ">Change Password</p>
               <p className="text-sm text-[#565656]">
@@ -44,7 +44,7 @@ export default function Settings() {
             <button className="px-4 self-end py-2 bg-[#F8B400] text-white rounded-md">
               Change
             </button>
-          </div> */}
+          </div>
         </div>
       </div>
       <Footer />

@@ -5,13 +5,31 @@ import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { line_data } from "../../utils/lineData";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../../config";
+import { TiUserAdd } from "react-icons/ti";
+import { GrClose } from "react-icons/gr";
+import { HiOutlineTrash } from "react-icons/hi";
+import { FaEdit } from "react-icons/fa";
+import AddUpdateUser from "../../components/AddUpdateUser";
+import UserCard from "../../components/UserCard";
 
 export default function UserManagement() {
+  const [name, setName] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [email, setEmail] = useState("");
+  // const [country, setCountry] = useState("");
+  const [number, setNumber] = useState("");
+  const [query, setQuery] = useState("");
   const [data, setData] = useState({});
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [active, setActive] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [usersData, setUsersData] = useState([]);
+
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/analytics")
+      .get(`${BASE_SERVER_URL}/api/analytics`)
       .then((response) => {
         setData(response.data[0]);
       })
@@ -19,15 +37,101 @@ export default function UserManagement() {
         console.error(error);
       });
 
+    // axios
+    //   .get(`${BASE_SERVER_URL}/api/users`)
+    //   .then((response) => {
+    //     setUsersData(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+  }, []);
+
+  useEffect(() => {
     axios
-      .get("http://localhost:4000/api/users")
+      .get(`${BASE_SERVER_URL}/api/users`)
       .then((response) => {
         setUsersData(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [usersData]);
+
+  useEffect(() => {
+    if (!query) {
+      setFilteredUsers([]);
+      return;
+    }
+    const filtered = usersData.filter(
+      (user) => user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
+    setFilteredUsers(filtered);
+  }, [query]);
+
+  const addUser = (e) => {
+    console.log("hp");
+    e.preventDefault();
+    setLoading(true);
+    const data = { name, email, number };
+    axios
+      .post(`${BASE_SERVER_URL}/api/users/add`, data)
+      .then((response) => {
+        setLoading(false);
+        if (response.data.success) {
+          console.log("success");
+          alert("User added successfully");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setName("");
+    setEmail("");
+    setNumber("");
+    setActive(false);
+  };
+
+  const deleteUser = (id) => {
+    // eslint-disable-next-line
+    if (confirm("Are you sure you want to delete this item?")) {
+      axios
+        .post(`${BASE_SERVER_URL}/api/users/delete`, { id })
+        .then((response) => {
+          if (response.data.success) {
+            alert("User deleted successfully");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      // The user clicked "Cancel"
+      // Do nothing
+    }
+  };
+
+  const updateUser = () => {
+    setLoading(true);
+    const data = { id: selectedUserId, name, email, number };
+    axios
+      .post(`${BASE_SERVER_URL}/api/users/update`, data)
+      .then((response) => {
+        setLoading(false);
+        if (response.data.success) {
+          alert("User updated successfully");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+    setName("");
+    setEmail("");
+    setNumber("");
+    setActive(false);
+  };
+
   const UM_data = [
     {
       id: 1,
@@ -66,8 +170,16 @@ export default function UserManagement() {
       date: "12 November 2022",
     },
   ];
+
+  function handleOnUserEditClick(data) {
+    setSelectedUserId(data._id);
+    setName(data.name);
+    setNumber(data.phoneNumber);
+    setEmail(data.email);
+    setActiveEdit(!activeEdit);
+  }
   return (
-    <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
+    <div className=" bg-[#E9E9E9] h-full pt-4 overflow-scroll relative">
       <Navbar />
       <div className="MainContainer mb-6 bg-[#E6E6E6] grid grid-cols-4 gap-4 mx-4">
         <Sidebar />
@@ -147,19 +259,49 @@ export default function UserManagement() {
             </div>
           </div>
           <div className="div2 flex p-4 items-center justify-between">
-            <select
-              name=""
-              id=""
-              className="rounded-md py-1 px-3 cursor-pointer"
+            <button
+              onClick={() => setActive(!active)}
+              className=" flex items-center gap-3 text-[#4C4C4C] hover:text-black bg-[#F0F0F0] rounded-3xl py-2 px-4"
             >
-              <option value="">Latest</option>
-              <option value="">Last</option>
-            </select>
+              Add User <TiUserAdd className="text-lg" />
+            </button>
+            {active && (
+              <AddUpdateUser
+                update={false}
+                setActive={setActive}
+                setName={setName}
+                name={name}
+                onSubmit={addUser}
+                email={email}
+                setEmail={setEmail}
+                number={number}
+                setNumber={setNumber}
+                loading={loading}
+              />
+            )}
+            {activeEdit && (
+              <AddUpdateUser
+                setSelectedUserId={setSelectedUserId}
+                selectedUserId={selectedUserId}
+                update={true}
+                setActive={setActiveEdit}
+                setName={setName}
+                name={name}
+                onSubmit={updateUser}
+                email={email}
+                setEmail={setEmail}
+                number={number}
+                setNumber={setNumber}
+                loading={loading}
+              />
+            )}
             <div className="invisible sm:visible rounded-3xl flex items-center bg-[#F0F0F0] py-2 px-5">
               <input
                 type="text"
                 placeholder="Search..."
                 className="bg-[#F0F0F0] outline-none"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
               <img
                 src="/img/search1.png"
@@ -172,28 +314,22 @@ export default function UserManagement() {
             <div className="flex text-[#F0F0F0] text-xs sm:text-base font-semibold rounded-[10px] gap-8 p-6 items-center bg-[#4C4C4C] transition duration-75 ease-in-out shadow-md">
               <img src="/img/target.png" alt="" className="w-7" />
               <span className="text-center w-40">Username</span>
+              {/* <span className="text-center w-40">UserId</span> */}
               <span className="text-center w-40 ">Role</span>
               <span className="text-center w-40">Phone</span>
               <span className="text-center w-40">Email</span>
             </div>
-            {usersData &&
-              usersData.map((data) => {
-                return (
-                  <div
-                    className="flex text-[#676666] text-xs sm:text-base rounded-[10px] gap-8 p-6 items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
-                    key={data.id}
-                  >
-                    <img src="/img/target.png" alt="" className="w-6" />
-                    <span className="text-center w-40">{data.name}</span>
-                    <span className="text-center w-40">{data.role}</span>
-                    <span className="text-center w-40">{data.phoneNumber}</span>
-                    <span className="text-center  flex flex-wrap">
-                      {data.email}
-                    </span>
-                    {/* <img src="/img/bill.png" alt="" className="w-6" /> */}
-                  </div>
-                );
-              })}
+
+            {(query ? filteredUsers : usersData).map((data) => {
+              return (
+                <UserCard
+                  mykey={`user-card-${data.id}`}
+                  data={data}
+                  handleOnUserEditClick={handleOnUserEditClick}
+                  deleteUser={deleteUser}
+                />
+              );
+            })}
           </div>
         </div>
       </div>

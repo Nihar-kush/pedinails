@@ -5,12 +5,13 @@ import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import { bar_data } from "../../utils/barData";
 import axios from "axios";
+import { BASE_SERVER_URL } from "../../config";
 
 export default function BookingDashboard() {
   const [data, setData] = useState(null);
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/bookings")
+      .get(`${BASE_SERVER_URL}/api/bookings`)
       .then((response) => {
         setData(response.data[0]);
       })

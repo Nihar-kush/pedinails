@@ -1,12 +1,103 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import Calendar from "react-calendar";
+import axios from "axios";
+import { BASE_SERVER_URL } from "../../config";
+import { generateMonthYearString } from "../../utils";
 
 export default function BookingCalender() {
   const [date, setDate] = useState(new Date());
+  const [dates, setDates] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [bookingsData, setBookingsData] = useState([]);
+  const [customerName, setCustomerName] = useState("");
+  const [customerNumber, setCustomerNumber] = useState("");
+  const [service, setService] = useState("");
+  const [price, setPrice] = useState("");
   const [active, setActive] = useState(false);
+  const [prevSlotSearch, setPrevSlotSearch] = useState(null);
+
+  useEffect(() => {
+    const slotId = generateMonthYearString(date);
+    if (slotId === prevSlotSearch) {
+      return;
+    }
+    axios
+      .get(`${BASE_SERVER_URL}/api/bookings/get?timestamp=${date}`)
+      .then((response) => {
+        setPrevSlotSearch(slotId);
+        // response.data.bookedDates.map((date) => console.log(date.date));
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    // eslint-disable-next-line
+  }, [date]);
+
+  useEffect(() => {
+    if (!data) return;
+    const dates = data.bookedDates?.filter(
+      (item) => item.date === date.getDate()
+    );
+    getBookingDetails(dates);
+  }, [date, data]);
+
+  const makeIdString = (array) => {
+    if (!array) return "";
+    return array.reduce(
+      (boookingIds, currentValue, currentIndex) =>
+        boookingIds + (currentIndex === 0 ? "" : ",") + currentValue.id,
+      ""
+    );
+  };
+
+  const getBookingDetails = (dates) => {
+    const ids = makeIdString(dates);
+    axios
+      .get(`${BASE_SERVER_URL}/api/bookings/getDetails?ids=${ids}`)
+      .then((response) => {
+        setBookingsData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const addBooking = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const data = {
+      customerName,
+      customerNumber,
+      service,
+      price,
+      timestamp: date,
+    };
+    axios
+      .post(`${BASE_SERVER_URL}/api/bookings/add`, data)
+      .then((response) => {
+        if (response.data.success) {
+          setBookingsData((prev) => [...prev, data]);
+          alert("Booking added successfully");
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log("error123");
+        console.error(error);
+      });
+    setActive(false);
+    setCustomerName("");
+    setCustomerNumber("");
+    setService("");
+    setPrice("");
+  };
+
   return (
     <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
@@ -15,7 +106,7 @@ export default function BookingCalender() {
         {/* MAIN VIEW */}
         <div className="Main col-span-4 sm:col-span-3 p-4 bg-[#FFFFFF] ">
           <div className="w-full flex items-center p-4 ">
-            <div className="rounded-[10px] w-full  overflow-hidden flex flex-col sm:flex-row gap-3 shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
+            <div className="rounded-[10px] w-full  overflow-hidden flex flex-col sm:flex-row gap-1 shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
               <div className="div1 sm:w-[50%] w-full">
                 <Calendar onChange={setDate} value={date} />
                 <div className=" w-full bg-white flex flex-row-reverse p-4">
@@ -26,42 +117,114 @@ export default function BookingCalender() {
                     Add Booking
                   </button>
                   {active && (
-                    <div className="absolute top-10 right-10 z-10 bg-[#ffffff] shadow-xl rounded-md py-4 px-6 flex flex-col gap-8 items-center">
+                    <div className="absolute w-[27rem] top-10 right-36 z-10 bg-[#ffffff] shadow-xl rounded-md py-4 px-6 flex flex-col gap-8 items-center">
                       <p className="text-4xl font-semibold">Add New Booking</p>
-                      <div className="border-b-[1px]">
-                        <p>Service Name</p>
-                        <input type="text" />
-                      </div>
-                      <div className="border-b-[1px]">
-                        <p>Price</p>
-                        <input type="number" />
-                      </div>
-                      <div className="flex items-center justify-center gap-5">
-                        <button
-                          onClick={() => setActive(false)}
-                          className="text-white py-2 px-4 rounded-md text-center bg-[#289D01]"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={() => setActive(false)}
-                          className="text-white py-2 px-4 rounded-md text-center bg-[#FCAC11]"
-                        >
-                          Ok
-                        </button>
-                      </div>
+                      <form
+                        className="flex flex-col gap-6 w-[70%]"
+                        onSubmit={addBooking}
+                      >
+                        <div className="border-b-[1px]">
+                          <p>Customer's Name</p>
+                          <input
+                            className="w-full"
+                            required
+                            type="text"
+                            value={customerName}
+                            onChange={(e) => setCustomerName(e.target.value)}
+                          />
+                        </div>
+                        <div className="border-b-[1px]">
+                          <p>Customer's Phone no.</p>
+                          <input
+                            className="w-full"
+                            required
+                            min="0"
+                            type="text"
+                            value={customerNumber}
+                            onChange={(e) => setCustomerNumber(e.target.value)}
+                          />
+                        </div>
+                        <div className="border-b-[1px]">
+                          <p>Service Name</p>
+                          <input
+                            className="w-full"
+                            required
+                            type="text"
+                            value={service}
+                            onChange={(e) => setService(e.target.value)}
+                          />
+                        </div>
+                        <div className="border-b-[1px]">
+                          <p>Price</p>
+                          <input
+                            className="w-full"
+                            required
+                            type="number"
+                            min="0"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-center gap-5">
+                          <button
+                            onClick={() => setActive(false)}
+                            className="text-white py-2 px-4 rounded-md text-center bg-[#289D01]"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="text-white py-2 px-4 rounded-md text-center bg-[#FCAC11]"
+                          >
+                            {loading ? "Adding" : "Add"}
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="div2 w-[50%] flex flex-col p-4">
-                <span className="relative text-[1.02rem] w-[80%] bold rounded-lg bg-white pl-0 font-sans overflow-hidden">
-                  <span className="absolute h-full bg-[#FF1744] w-2"></span>
-                  <p className="p-4">
-                    There are no events planned for {date.toDateString()}.
+              {bookingsData && bookingsData.length < 1 ? (
+                <div className="div2 w-[50%] flex flex-col p-4">
+                  <span className="relative text-[1.02rem] w-[80%] bold rounded-lg bg-white pl-0 font-sans overflow-hidden">
+                    <span className="absolute h-full bg-[#FF1744] w-2"></span>
+                    <p className="p-4">
+                      There are no events planned for {date.toDateString()}.
+                    </p>
+                  </span>
+                </div>
+              ) : (
+                <div className="div2 flex flex-col relative h-[24rem] gap-4 overflow-y-scroll scroll-smooth">
+                  <p className="sticky py-2 bg-[#FCAC11] left-0 top-0 text-center text-xl text-white">
+                    Bookings
                   </p>
-                </span>
-              </div>
+                  <div className="flex text-[#F0F0F0] text-xs sm:text-base font-semibold p-5 rounded-[10px] justify-around items-center bg-[#4C4C4C] transition duration-75 ease-in-out shadow-md">
+                    <img src="/img/target.png" alt="" className="w-7" />
+                    <span className="text-center w-40">Customer</span>
+                    <span className="text-center w-40 ">Phone</span>
+                    <span className="text-center w-40">Service</span>
+                    <span className="text-center w-40">Price</span>
+                  </div>
+                  {bookingsData.map((data) => {
+                    return (
+                      <div
+                        className="flex text-[#676666] text-xs sm:text-base p-5 rounded-[10px] justify-around items-center bg-[#F0F0F0] transition duration-75 ease-in-out shadow-md hover:bg-[#fcac1125] hover:shadow-[#fcac1170]"
+                        key={data.id}
+                      >
+                        <img src="/img/target.png" alt="" className="w-7" />
+                        <span className="text-center w-40 truncate">
+                          {data.customerName}
+                        </span>
+                        <span className="text-center w-40">
+                          {data.customerNumber}
+                        </span>
+                        <span className="text-center w-40">{data.service}</span>
+                        <span className="text-center w-40">${data.price}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
