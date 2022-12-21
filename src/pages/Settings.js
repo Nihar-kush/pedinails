@@ -41,7 +41,10 @@ export default function Settings() {
               </div>
             </div>
 
-            <button className="px-4 self-end py-2 bg-[#F8B400] text-white rounded-md">
+            <button
+              onClick={() => alert("Password changed successfully")}
+              className="px-4 self-end py-2 bg-[#F8B400] text-white rounded-md"
+            >
               Change
             </button>
           </div>
