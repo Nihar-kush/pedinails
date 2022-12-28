@@ -26,7 +26,7 @@ export default function LocationManagement() {
   const apiKey = "AIzaSyDJuO5DdbPgZmKJlhgh0TB_ZG0yPr2GZlg";
 
   const handleMapClick = (event) => {
-    setClickedLocation({
+    setLocation({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     });
@@ -47,7 +47,6 @@ export default function LocationManagement() {
       console.error(error);
     }
   }, [clickedLocation]);
-
 
   // useEffect(() => {
   //   navigator.geolocation.getCurrentPosition((position) => {
@@ -130,7 +129,9 @@ export default function LocationManagement() {
             <div className="bg-[#7e7e7e85] flex justify-center items-center fixed top-0 left-0 z-50 h-screen w-screen ">
               <div className="animate-slide-in rounded-lg w-[35%] h-fit bg-white flex flex-col gap-5 p-6 py-6 min-w-[400px]">
                 <p className="text-2xl flex items-center justify-between border-b-[0.8px]">
-                  {`Admin details ( ${location} )`}
+                  {`Admin details (location: ${
+                    location.lat + "," + location.lng
+                  } )`}
                   <GrClose
                     className="cursor-pointer"
                     onClick={() => {
@@ -256,7 +257,7 @@ export default function LocationManagement() {
                         placeholder="Pick from Map"
                         type="text"
                         className="rounded-lg p-2"
-                        value={location}
+                        value={location.lat + "," + location.lng}
                       />
                       <button
                         onClick={() => setActive(true)}
