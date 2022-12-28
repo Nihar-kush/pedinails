@@ -1,29 +1,25 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MdLogout } from "react-icons/md";
 import MagicBell, {
   FloatingNotificationInbox,
 } from "@magicbell/magicbell-react";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../context/AuthContext";
+import { delete_cookie } from "../utils/cookie";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
 
   const logoutHandler = () => {
-    navigate("/");
+    setCurrentUser(null);
+    delete_cookie("access_token");
+    // navigate("/");
   };
-  const data = [
-    {
-      update: "70 new employees are shifted",
-      timestamp: 1596119688264,
-    },
-    {
-      update: "Time to Take a Break, TADA!!!",
-      timestamp: 1596119686811,
-    },
-  ];
+
   return (
     <div className="navbar absolute mb-28 sm:w-[98%] sm:mx-4 drop-shadow-lg z-50">
-      <div className="logo cursor-pointer flex justify-center">
+      <div className="logo flex justify-center">
         <img
           src={process.env.PUBLIC_URL + "/img/header_top.png"}
           alt=""
@@ -31,7 +27,7 @@ export default function Navbar() {
         />
       </div>
       <div className="flex flex-col justify-between sm:flex-row sm:h-20 bg-[#FFFFFF] text-[#2e2e2e] sticky top-0 z-40 ">
-        <a href="/" className=" overflow-hidden">
+        <a href="/Dashboard" className=" overflow-hidden">
           <img src={process.env.PUBLIC_URL + "/img/logo.jpg"} alt="" />
         </a>
 
@@ -68,7 +64,9 @@ export default function Navbar() {
                   )}
                 </MagicBell>
               </span>
-              <span className="text-lg">Admin</span>
+              <span className="text-lg">
+                {currentUser ? currentUser.name : "Admin"}
+              </span>
               <img
                 src={process.env.PUBLIC_URL + "/img/user.png"}
                 alt=""

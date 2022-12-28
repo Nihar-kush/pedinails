@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { BASE_SERVER_URL } from "../config";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -9,29 +10,28 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  async function registerUser(e) {
+  async function addUser(e) {
     e.preventDefault();
-    // const response = await axios.post(
-    //   "https://floating-shore-92853.herokuapp.com/api/auth/register",
-    //   {
-    //     name,
-    //     email,
-    //     password,
-    //   }
-    // );
-    // const data = response.data;
-    // console.log(data);
-    navigate("/Dashboard");
-    // if (data) {
-    //   navigate("/Dashboard");
-    // }
+    axios
+      .post(`${BASE_SERVER_URL}/api/auth/register`, {
+        name,
+        email,
+        password,
+      })
+      .then((response) => {
+        if (response.data.success) {
+          alert("User added successfully");
+        }else{
+          alert(response.data.errorMsg);
+        }
+      });
   }
 
   return (
     <div className="formContainer h-screen w-screen flex items-center justify-center">
       <div className="formWrapper flex flex-col items-center gap-4 px-14 py-10 rounded-lg ring-1 ring-[#F8B400]">
         <img src="/img/logo.jpg" alt="" className="" />
-        <form className="flex flex-col gap-4 w-full" onSubmit={registerUser}>
+        <form className="flex flex-col gap-4 w-full" onSubmit={addUser}>
           <input
             type="name"
             value={name}

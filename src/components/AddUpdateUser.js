@@ -2,6 +2,8 @@ import React from "react";
 import { GrClose } from "react-icons/gr";
 
 export default function AddUpdateUser({
+  role,
+  setRole,
   setSelectedUserId,
   selectedUserId,
   update,
@@ -24,6 +26,9 @@ export default function AddUpdateUser({
             className="cursor-pointer"
             onClick={() => {
               setName("");
+              {
+                update && setRole("");
+              }
               setEmail("");
               setNumber("");
               setActive(false);
@@ -50,6 +55,22 @@ export default function AddUpdateUser({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+          </label>
+          <label className="w-20 p-3">
+            Role:{" "}
+            <select
+              name="role"
+              className="border-[1px] cursor-pointer w-80 rounded-md bg-[#F8F8F8]"
+              id=""
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value);
+              }}
+            >
+              <option value="user">user</option>
+              <option value="admin">admin</option>
+              <option value="superadmin">superadmin</option>
+            </select>
           </label>
           <label className="w-28 p-3">
             Mobile no:{" "}

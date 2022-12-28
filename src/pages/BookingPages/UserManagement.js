@@ -7,17 +7,15 @@ import { line_data } from "../../utils/lineData";
 import axios from "axios";
 import { BASE_SERVER_URL } from "../../config";
 import { TiUserAdd } from "react-icons/ti";
-import { GrClose } from "react-icons/gr";
-import { HiOutlineTrash } from "react-icons/hi";
-import { FaEdit } from "react-icons/fa";
 import AddUpdateUser from "../../components/AddUpdateUser";
 import UserCard from "../../components/UserCard";
 
 export default function UserManagement() {
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [email, setEmail] = useState("");
-  // const [country, setCountry] = useState("");
+  const [role, setRole] = useState("");
   const [number, setNumber] = useState("");
   const [query, setQuery] = useState("");
   const [data, setData] = useState({});
@@ -81,12 +79,15 @@ export default function UserManagement() {
         if (response.data.success) {
           console.log("success");
           alert("User added successfully");
+        } else {
+          alert(response.data.message);
         }
       })
       .catch((error) => {
         console.log(error);
       });
     setName("");
+    setRole("");
     setEmail("");
     setNumber("");
     setActive(false);
@@ -111,7 +112,8 @@ export default function UserManagement() {
     }
   };
 
-  const updateUser = () => {
+  const updateUser = (e) => {
+    e.preventDefault();
     setLoading(true);
     const data = { id: selectedUserId, name, email, number };
     axios
@@ -126,58 +128,22 @@ export default function UserManagement() {
         setLoading(false);
         console.log(error);
       });
+    setActiveEdit(false);
     setName("");
+    setRole("");
     setEmail("");
     setNumber("");
-    setActive(false);
   };
-
-  const UM_data = [
-    {
-      id: 1,
-      name: "Mahima",
-      type: "Premium Member",
-      date: "24 December 2022",
-    },
-    {
-      id: 2,
-      name: "Simran",
-      type: "Member",
-      date: "12 November 2022",
-    },
-    {
-      id: 3,
-      name: "Vidhi",
-      type: "Member",
-      date: "21 November 2022",
-    },
-    {
-      id: 4,
-      name: "Kanika",
-      type: "Premium Member",
-      date: "12 November 2022",
-    },
-    {
-      id: 5,
-      name: "Ishika",
-      type: "Premium Member",
-      date: "12 November 2022",
-    },
-    {
-      id: 6,
-      name: "Vidhi",
-      type: "Member",
-      date: "12 November 2022",
-    },
-  ];
 
   function handleOnUserEditClick(data) {
     setSelectedUserId(data._id);
     setName(data.name);
+    setRole(data.role);
     setNumber(data.phoneNumber);
     setEmail(data.email);
     setActiveEdit(!activeEdit);
   }
+
   return (
     <div className=" bg-[#E9E9E9] h-full pt-4 overflow-scroll relative">
       <Navbar />
@@ -268,6 +234,8 @@ export default function UserManagement() {
             {active && (
               <AddUpdateUser
                 update={false}
+                setRole={setRole}
+                role={role}
                 setActive={setActive}
                 setName={setName}
                 name={name}
@@ -287,6 +255,8 @@ export default function UserManagement() {
                 setActive={setActiveEdit}
                 setName={setName}
                 name={name}
+                setRole={setRole}
+                role={role}
                 onSubmit={updateUser}
                 email={email}
                 setEmail={setEmail}

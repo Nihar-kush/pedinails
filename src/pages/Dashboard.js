@@ -1,20 +1,20 @@
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsivePie, ResponsivePieCanvas } from "@nivo/pie";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-// import { bar_data } from "../utils/dashBarData";
-// import { pie_data } from "../utils/dashPieData";
 import axios from "axios";
 import { BASE_SERVER_URL } from "../config";
-// import jwt from "jsonwebtoken";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Home() {
+  const { currentUser } = useContext(AuthContext);
   const [data, setData] = useState({});
   useEffect(() => {
     // const token = localStorage.getItem("token");
     // console.log(token);
+    // + (x ? "?bid=" + y : "legend_data")
     axios
       .get(`${BASE_SERVER_URL}/api/analytics`)
       .then((response) => {
@@ -103,17 +103,17 @@ export default function Home() {
               <img src="/img/branch.png" alt="" className="absolute -left-7" />
               <div className="w-[75%] h-full flex flex-col justify-between">
                 <div className="bg-[#35AB97] text-white h-16 text-4xl flex gap-5 justify-between items-center ">
-                  <img src="/img/s6.png" alt="" />
-                  <div className="pr-10 text-xl font-semibold">
-                    <p>Online</p>
-                    <p>Revenue</p>
+                  <img src="/img/s6.png" alt="" className="w-16 h-full" />
+                  <div className=" text-base w-48  font-semibold">
+                    <p>Online Revenue</p>
+                    <p className="text-lg">{data.online_revenue}$</p>
                   </div>
                 </div>
                 <div className="bg-[#AB6635] text-white h-16 text-4xl flex gap-5 justify-between items-center ">
-                  <img src="/img/s7.png" alt="" />
-                  <div className="pr-10 text-xl font-semibold">
-                    <p>Cash</p>
-                    <p>Revenue</p>
+                  <img src="/img/s7.png" alt="" className="w-16 h-full" />
+                  <div className=" text-base w-48  font-semibold">
+                    <p>Cash Revenue</p>
+                    <p className="text-lg">{data.cash_revenue}$</p>
                   </div>
                 </div>
               </div>

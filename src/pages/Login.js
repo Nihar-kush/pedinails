@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate, useNavigate } from "react-router";
@@ -8,11 +8,15 @@ import { BASE_SERVER_URL } from "../config";
 export default function Login() {
   const [nameOrMail, setNameOrMail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const [pass, setPass] = useState("");
   const navigate = useNavigate();
+  const { setCurrentUser, currentUser } = useContext(AuthContext);
 
-  // const { setCurrentUserData } = useContext(AuthContext);
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/Dashboard");
+    }
+  }, [currentUser]);
 
   async function loginUser(e) {
     e.preventDefault();
@@ -25,21 +29,12 @@ export default function Login() {
           })
           .then((response) => {
             response.data.success === true
-              ? response.data.data.role === "superadmin"
-                ? navigate("/Dashboard")
-                : alert("Enter correct details")
+              ? setCurrentUser(response.data.data)
               : alert("Enter correct details");
           })
           .catch((error) => {
             return error;
           });
-    // const data = response.data;
-    // console.log(response);
-    // navigate("/Dashboard");
-    // if (data) {
-    //   navigate("/Dashboard");
-    // }
-    // setCurrentUserData(data);
   }
 
   return (

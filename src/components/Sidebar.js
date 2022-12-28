@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { useContext } from "react";
 import { AiFillDashboard } from "react-icons/ai";
 import { FaBook, FaChartBar, FaCogs, FaWindowRestore } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Sidebar() {
   const [toggleBooking, setToggleBooking] = useState(false);
+  const { currentUser } = useContext(AuthContext);
   return (
     <div className="Sidebar h-full drop-shadow-lg col-span-4 sm:col-span-1  p-4 bg-[#FFFFFF]">
       <ul className="flex flex-col text-[1.1rem]">
@@ -84,12 +87,14 @@ export default function Sidebar() {
           </li>
         </Link>
 
-        <Link to="/LocationManagement">
-          <li className=" p-5 pl-0 text-[#676666] hover:text-black flex items-center gap-4 cursor-pointer border-b-[0.8px]">
-            <MdLocationOn className="text-xl" />
-            Location Management
-          </li>
-        </Link>
+        {currentUser?.role === "superadmin" && (
+          <Link to="/LocationManagement">
+            <li className=" p-5 pl-0 text-[#676666] hover:text-black flex items-center gap-4 cursor-pointer border-b-[0.8px]">
+              <MdLocationOn className="text-xl" />
+              Location Management
+            </li>
+          </Link>
+        )}
 
         <Link to="/BannerManagement">
           <li className=" p-5 pl-0 text-[#676666] hover:text-black flex items-center gap-4 cursor-pointer border-b-[0.8px]">

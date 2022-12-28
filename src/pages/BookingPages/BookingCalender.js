@@ -4,14 +4,16 @@ import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import Calendar from "react-calendar";
 import axios from "axios";
+import { HiOutlineTrash } from "react-icons/hi";
 import { BASE_SERVER_URL } from "../../config";
 import { generateMonthYearString } from "../../utils";
+import { addDays, differenceInCalendarDays } from "date-fns";
 
 export default function BookingCalender() {
   const [date, setDate] = useState(new Date());
   const [dates, setDates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [currentMonthsBookedData, setCurrentMonthsBookedData] = useState([]);
   const [bookingsData, setBookingsData] = useState([]);
   const [customerName, setCustomerName] = useState("");
   const [customerNumber, setCustomerNumber] = useState("");
@@ -19,6 +21,8 @@ export default function BookingCalender() {
   const [price, setPrice] = useState("");
   const [active, setActive] = useState(false);
   const [prevSlotSearch, setPrevSlotSearch] = useState(null);
+  const [styleActive, setStyleActive] = useState(false);
+  const [highlightedDates, setHighlightedDates] = useState([]);
 
   useEffect(() => {
     const slotId = generateMonthYearString(date);
@@ -30,7 +34,8 @@ export default function BookingCalender() {
       .then((response) => {
         setPrevSlotSearch(slotId);
         // response.data.bookedDates.map((date) => console.log(date.date));
-        setData(response.data);
+        setCurrentMonthsBookedData(response.data.data.bookedDates);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -39,12 +44,28 @@ export default function BookingCalender() {
   }, [date]);
 
   useEffect(() => {
-    if (!data) return;
-    const dates = data.bookedDates?.filter(
+    if (!currentMonthsBookedData) {
+      return;
+    }
+    createHighlightedArray(currentMonthsBookedData);
+  }, [currentMonthsBookedData]);
+
+  const createHighlightedArray = (array) => {
+    const newArray = array.map((item) => {
+      const dateObject = new Date(date);
+      return new Date(dateObject.setDate(item.date));
+    });
+    console.log(newArray);
+    setHighlightedDates(newArray);
+  };
+
+  useEffect(() => {
+    if (!currentMonthsBookedData) return;
+    const dates = currentMonthsBookedData?.filter(
       (item) => item.date === date.getDate()
     );
     getBookingDetails(dates);
-  }, [date, data]);
+  }, [date, currentMonthsBookedData]);
 
   const makeIdString = (array) => {
     if (!array) return "";
@@ -83,6 +104,10 @@ export default function BookingCalender() {
         if (response.data.success) {
           setBookingsData((prev) => [...prev, data]);
           alert("Booking added successfully");
+          setCurrentMonthsBookedData((prev) => [
+            ...prev,
+            { date: date.getDate(), id: response.data.data },
+          ]);
         }
         setLoading(false);
       })
@@ -98,6 +123,42 @@ export default function BookingCalender() {
     setPrice("");
   };
 
+  const deleteBooking = (id) => {
+    const data = {
+      id,
+      date,
+    };
+    axios
+      .post(`${BASE_SERVER_URL}/api/bookings/delete`, data)
+      .then((response) => {
+        if (response.data.success) {
+          setBookingsData((prev) =>
+            prev.filter((booking) => booking.id !== id)
+          );
+          alert("Booking deleted successfully");
+          setCurrentMonthsBookedData((prev) =>
+            prev.filter((booking) => booking.id !== id)
+          );
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  function isSameDay(a, b) {
+    return differenceInCalendarDays(a, b) === 0;
+  }
+
+  function tileClassName({ date, view }) {
+    if (
+      view === "month" &&
+      highlightedDates.find((dDate) => isSameDay(dDate, date))
+    ) {
+      return "highlight";
+    }
+  }
+
   return (
     <div className=" bg-[#E9E9E9] h-screen pt-4 overflow-scroll relative">
       <Navbar />
@@ -108,7 +169,11 @@ export default function BookingCalender() {
           <div className="w-full flex items-center p-4 ">
             <div className="rounded-[10px] w-full  overflow-hidden flex flex-col sm:flex-row gap-1 shadow-[4.0px_8.0px_8.0px_#a1a1a15f]  bg-[#F0F0F0]">
               <div className="div1 sm:w-[50%] w-full">
-                <Calendar onChange={setDate} value={date} />
+                <Calendar
+                  tileClassName={tileClassName}
+                  onChange={setDate}
+                  value={date}
+                />
                 <div className=" w-full bg-white flex flex-row-reverse p-4">
                   <button
                     onClick={() => setActive(!active)}
@@ -220,6 +285,10 @@ export default function BookingCalender() {
                         </span>
                         <span className="text-center w-40">{data.service}</span>
                         <span className="text-center w-40">${data.price}</span>
+                        <HiOutlineTrash
+                          className="text-xl hover:scale-125"
+                          onClick={() => deleteBooking(data.id)}
+                        />
                       </div>
                     );
                   })}
